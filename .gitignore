@@ -1,0 +1,12 @@
+# Ignore environment variables
+.env
+.env.local
+
+# Vite cache
+node_modules/
+dist/
+.vite/
+
+# System files
+.DS_Store
+.vercel

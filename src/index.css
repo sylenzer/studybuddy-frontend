@@ -1,0 +1,143 @@
+/* index.css — the one source of truth */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Global Theme (Light + Dark) */
+:root {
+  --radius: 0.625rem;
+  --background: #e6e6fa;
+  --foreground: #1a1a1a;
+  --primary: #7e22ce;
+  --primary-foreground: #ffffff;
+  --secondary: #ffcccb;
+  --secondary-foreground: #4b0082;
+  --muted: #f3f3f3;
+  --border: #ccc;
+  --input: #ddd;
+  --ring: #7e22ce;
+}
+
+.dark {
+  --background: #1a1a1a;
+  --foreground: #ffffff;
+  --primary: #a855f7;
+  --primary-foreground: #1a1a1a;
+  --secondary: #2d2d2d;
+  --secondary-foreground: #ffffff;
+  --border: #444;
+  --input: #555;
+  --ring: #a855f7;
+}
+
+/* Background Checkerboard Pattern */
+body {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(
+      45deg,
+      var(--secondary) 25%,
+      transparent 25%,
+      transparent 75%,
+      var(--secondary) 75%
+    ),
+    linear-gradient(
+      45deg,
+      transparent 25%,
+      var(--background) 25%,
+      var(--background) 75%,
+      transparent 75%
+    ),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03));
+  background-size: 80px 80px, 80px 80px, 100% 100%;
+  background-position: 0 0, 40px 40px, 0 0;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 600;
+  color: var(--foreground);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+a, button {
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+main, .layout-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  min-height: 100vh;
+  padding-top: 5rem; /* Adjust padding for layout content */
+}
+
+nav {
+  font-size: 0.95rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+}
+
+nav .nav-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+nav .nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+nav a {
+  color: var(--foreground);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+nav a:hover {
+  color: var(--primary);
+}
+.debug-screens::before {
+  content: attr(data-debug);
+  position: fixed;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  background: #111;
+  color: lime;
+  font-size: 12px;
+  padding: 2px 6px;
+  z-index: 9999;
+}
+@layer utilities {
+  @keyframes glow {
+    0%, 100% {
+      box-shadow: 0 0 8px #c084fc, 0 0 24px #e879f9, 0 0 40px #c084fc;
+    }
+    50% {
+      box-shadow: 0 0 16px #d946ef, 0 0 32px #f472b6, 0 0 48px #a855f7;
+    }
+  }
+
+  .animate-glow {
+    animation: glow 2.5s ease-in-out infinite;
+  }
+}
