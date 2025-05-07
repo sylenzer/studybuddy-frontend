@@ -1,11 +1,17 @@
+// solveProblem.js
+
 export async function solveProblem({ problem, hintMode, strategy, userId }) {
   if (!problem) throw new Error("Problem is required.");
   if (!userId) throw new Error("User ID is required.");
 
-  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/solve`, {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+  const response = await fetch(`${backendUrl}/api/solve`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ problem, hintMode, strategy, userId }),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ problem, hintMode, strategy, userId })
   });
 
   if (!response.ok) {
