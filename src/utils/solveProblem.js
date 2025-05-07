@@ -1,5 +1,3 @@
-// solveProblem.js
-
 export async function solveProblem({ problem, hintMode, strategy, userId }) {
   if (!problem) throw new Error("Problem is required.");
   if (!userId) throw new Error("User ID is required.");
@@ -14,11 +12,16 @@ export async function solveProblem({ problem, hintMode, strategy, userId }) {
     body: JSON.stringify({ problem, hintMode, strategy, userId })
   });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData?.error || "Failed to solve problem.");
+  let resultData;
+  try {
+    resultData = await response.json();
+  } catch (err) {
+    throw new Error("Invalid JSON response from server.");
   }
 
-  const result = await response.json();
-  return result;
+  if (!response.ok) {
+    throw new Error(resultData?.error || "Failed to solve problem.");
+  }
+
+  return resultData;
 }
