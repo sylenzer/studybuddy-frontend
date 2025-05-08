@@ -1,1 +1,1 @@
-# studybuddy-backend
+# studybuddy-frontend
