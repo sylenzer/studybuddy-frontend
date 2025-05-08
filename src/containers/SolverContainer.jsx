@@ -1,4 +1,5 @@
 // src/containers/SolverContainer.jsx
+
 import React, { useState, useEffect } from "react";
 import OCRUpload from "../components/OCRUpload";
 import SolverStepsPanel from "../components/SolverStepsPanel";
@@ -17,7 +18,7 @@ const SolverContainer = () => {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
   const [modelUsed, setModelUsed] = useState(null);
-  const [backend, setBackend] = useState("Vercel"); // Default to Vercel
+  const [backend, setBackend] = useState("Vercel");
 
   const { user } = useUser();
   const { saveProgress, fetchHistory } = useSupabaseProgress();
@@ -36,10 +37,17 @@ const SolverContainer = () => {
     }
 
     try {
-      const response = await fetch("/api/solve", {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+      const response = await fetch(`${backendUrl}/api/solve`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ problem: input }),
+        body: JSON.stringify({
+          problem: input,
+          hintMode: true,
+          strategy: "algebraic",
+          userId: user.id,
+        }),
       });
 
       const result = await response.json();
@@ -72,7 +80,7 @@ const SolverContainer = () => {
         problem: input,
         result: splitSteps.join("\n"),
         visual: JSON.stringify(visualsExtracted),
-        hintMode: false,
+        hintMode: true,
       });
 
       const updatedHistory = await fetchHistory();
