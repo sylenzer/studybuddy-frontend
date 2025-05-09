@@ -9,6 +9,15 @@ import { useUser } from "@/context/UserContext";
 import LoaderCube from "../components/LoaderCube";
 import { useTokenManager } from "@/hooks/useTokenManager";
 
+const EnvDebugger = () => {
+  return (
+    <div className="p-4 bg-yellow-100 text-black rounded mt-4">
+      <strong>Runtime VITE_BACKEND_URL:</strong>
+      <pre>{import.meta.env.VITE_BACKEND_URL || "🚨 Not available"}</pre>
+    </div>
+  );
+};
+
 const SolverContainer = () => {
   const [input, setInput] = useState("");
   const [steps, setSteps] = useState([]);
@@ -128,6 +137,8 @@ const SolverContainer = () => {
       </h2>
 
       <SolverStatusPanel modelUsed={modelUsed} backend={backend} />
+
+      <EnvDebugger />
 
       <form
         onSubmit={handleSubmit}
