@@ -30,33 +30,23 @@ export default function FeaturedTestimonialCarousel() {
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
+          exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.5 }}
+          className="rounded-lg bg-white shadow-md p-6"
         >
-          <Card className="bg-white dark:bg-background border shadow-md">
-            <CardContent className="p-6 space-y-4">
-              <p className="text-muted-foreground text-lg italic">“{testimonial.message}”</p>
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="font-semibold text-primary">{testimonial.name}</p>
-                  <span className="text-sm text-muted-foreground italic">{testimonial.role}</span>
-                </div>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <StarIcon
-                      key={i}
-                      className={`h-4 w-4 ${
-                        i < testimonial.stars ? "text-yellow-400" : "text-gray-300 dark:text-gray-600"
-                      }`}
-                      fill={i < testimonial.stars ? "currentColor" : "none"}
-                    />
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="flex gap-4 items-start">
+            <div className="text-yellow-400">
+              {[...Array(testimonial.rating)].map((_, i) => (
+                <StarIcon key={i} size={16} fill="currentColor" strokeWidth={0} />
+              ))}
+            </div>
+            <div>
+              <p className="text-gray-700 italic">“{testimonial.message}”</p>
+              <p className="text-sm font-semibold text-gray-900 mt-2">— {testimonial.author}</p>
+            </div>
+          </div>
         </motion.div>
       </AnimatePresence>
     </div>

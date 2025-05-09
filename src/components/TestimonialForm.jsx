@@ -1,4 +1,4 @@
-/ components/TestimonialForm.jsx
+// components/TestimonialForm.jsx
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,23 +30,24 @@ export const TestimonialForm = ({ onSubmit }) => {
         required
       />
       <select
-        className="w-full p-2 border border-border rounded-md bg-white dark:bg-muted text-sm"
+        className="w-full border rounded p-2 text-sm"
         value={role}
         onChange={(e) => setRole(e.target.value)}
       >
-        <option value="Student">🎓 Student</option>
-        <option value="Teacher">👩‍🏫 Teacher</option>
-        <option value="Parent">👨‍👩‍👧‍👦 Parent</option>
-        <option value="Admin">🏫 Admin</option>
+        <option value="Student">Student</option>
+        <option value="Parent">Parent</option>
+        <option value="Educator">Educator</option>
       </select>
       <Textarea
-        placeholder="Your testimonial"
+        placeholder="Share your thoughts..."
+        rows={4}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        rows={4}
         required
       />
-      <Button type="submit" className="w-full sm:w-auto">Submit</Button>
+      <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white">
+        Submit
+      </Button>
     </form>
   );
 };

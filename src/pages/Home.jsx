@@ -1,33 +1,20 @@
 // src/pages/Home.jsx
 import React from "react";
-import HeroSection from "@/components/HeroSection";
-
+import FeaturedTestimonialCarousel from "@/components/FeaturedTestimonialCarousel";
 
 const Home = () => {
-  
-
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Hero Section */}
-      <section className="flex-grow">
-        <HeroSection />
+    <div className="space-y-12">
+      <section className="text-center py-20 bg-gradient-to-br from-indigo-100 to-purple-100">
+        <h1 className="text-4xl font-extrabold text-purple-700 mb-4">
+          Welcome to StudyBuddy+
+        </h1>
+        <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+          Get step-by-step math help with hints, visuals, and adaptive learning — powered by AI, built for students.
+        </p>
       </section>
 
-      {/* Call to Action */}
-      <section className="text-center py-12 bg-purple-50">
-        <h2 className="text-3xl font-bold text-gray-800 mb-4">
-          Ready to boost your math skills?
-        </h2>
-        <p className="text-gray-600 mb-8">
-          Solve problems, track your progress, and build your confidence with StudyBuddy+!
-        </p>
-        <a
-          href="/solver"
-          className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-purple-700 transition"
-        >
-          Try the Solver Now
-        </a>
-      </section>
+      <FeaturedTestimonialCarousel />
     </div>
   );
 };

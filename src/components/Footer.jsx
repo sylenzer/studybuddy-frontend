@@ -13,7 +13,7 @@ const Footer = () => {
             Email Us: bltechnologies318@gmail.com
           </a>
           <a href="https://www.facebook.com/profile.php?id=61575801361510" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-            Facebook:  https://www.facebook.com/profile.php?id=61575801361510
+            Facebook: https://www.facebook.com/profile.php?id=61575801361510
           </a>
           <a href="#" className="text-blue-600 hover:underline">
             Instagram

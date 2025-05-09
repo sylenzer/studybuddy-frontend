@@ -47,6 +47,13 @@ const CustomProblemSolver = () => {
       setVisual(data.visual || null);
 
       if (user) {
+        console.log("📤 Sending to Supabase solver_history:", {
+          userId: user.id,
+          problem,
+          result: data.result,
+          visual: data.visual,
+          hintMode,
+        });
         await saveProgress({
           problem,
           result: data.result,
