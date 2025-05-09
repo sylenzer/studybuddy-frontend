@@ -10,7 +10,7 @@ const Navbar = () => {
 
   return (
     <nav className="w-full sticky top-0 z-50 bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border-b border-gray-300 dark:border-gray-700 shadow-sm">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col items-center sm:flex-row sm:justify-center sm:gap-10 gap-4 text-sm sm:text-base font-semibold text-gray-800 dark:text-white">
+      <div className="max-w-6xl mx-auto px-6 py-4 flex flex-wrap justify-center items-center gap-6 text-sm sm:text-base font-semibold text-gray-800 dark:text-white">
         <Link
           to="/"
           className="text-xl font-extrabold text-purple-600 hover:text-purple-700 transition"
