@@ -22,7 +22,10 @@ const CustomProblemSolver = () => {
   const handleSolve = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/solve', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      console.log("🧠 CustomProblemSolver using backend URL:", backendUrl);
+
+      const response = await fetch(`${backendUrl}/api/solve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ problem, hintMode }),
