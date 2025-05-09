@@ -36,11 +36,8 @@ const SolverContainer = () => {
     }
 
     try {
-  const backendUrl = "https://studybuddy-backend-production.up.railway.app";
-
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
       console.log("🔍 Backend URL:", backendUrl);
-console.log("🔍 Using hardcoded backend URL:", backendUrl);
-
 
       const response = await fetch(`${backendUrl}/api/solve`, {
         method: "POST",
