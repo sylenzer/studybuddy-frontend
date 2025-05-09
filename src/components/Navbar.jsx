@@ -6,11 +6,11 @@ import ThemeToggle from "@/components/ThemeToggle";
 
 const Navbar = () => {
   const { user } = useUser();
-  const { tokens } = useTokenManager(user?.id, user?.access_token); // ✅ Correct hook
+  const { tokens } = useTokenManager(user?.id, user?.access_token);
 
   return (
-    <nav className="w-full sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-300 dark:border-gray-700 shadow-sm">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between">
+    <nav className="w-full sticky top-0 z-50 bg-white/30 dark:bg-gray-900/30 backdrop-blur-md border-b border-gray-300 dark:border-gray-700 shadow-sm">
+      <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-y-4">
         {/* Brand */}
         <Link
           to="/"
@@ -19,8 +19,8 @@ const Navbar = () => {
           StudyBuddy+
         </Link>
 
-        {/* Nav Links aligned right */}
-        <div className="flex flex-wrap gap-4 justify-end w-full sm:w-auto items-center text-sm sm:text-base font-semibold text-gray-800 dark:text-white">
+        {/* Nav Links centered with spacing */}
+        <div className="flex flex-wrap justify-center gap-6 items-center text-sm sm:text-base font-semibold text-gray-800 dark:text-white">
           <Link to="/solver" className="hover:text-purple-500 transition">
             Problem Solver
           </Link>
