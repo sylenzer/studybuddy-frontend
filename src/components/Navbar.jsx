@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTokenManager } from "@/hooks/useTokenManager";
 import { useUser } from "../context/UserContext";
 import TokenBadge from "@/components/TokenBadge";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Navbar = () => {
   const { user } = useUser();
@@ -19,7 +20,7 @@ const Navbar = () => {
         </Link>
 
         {/* Nav Links aligned right */}
-        <div className="flex flex-wrap gap-6 justify-end w-full sm:w-auto items-center text-sm sm:text-base font-semibold text-gray-800 dark:text-white">
+        <div className="flex flex-wrap gap-4 justify-end w-full sm:w-auto items-center text-sm sm:text-base font-semibold text-gray-800 dark:text-white">
           <Link to="/solver" className="hover:text-purple-500 transition">
             Problem Solver
           </Link>
@@ -42,6 +43,7 @@ const Navbar = () => {
             </Link>
           )}
           {user && <TokenBadge tokens={tokens} />}
+          <ThemeToggle />
         </div>
       </div>
     </nav>
