@@ -1,5 +1,4 @@
 // src/containers/SolverContainer.jsx
-
 import React, { useState, useEffect } from "react";
 import OCRUpload from "../components/OCRUpload";
 import SolverStepsPanel from "../components/SolverStepsPanel";
@@ -38,6 +37,7 @@ const SolverContainer = () => {
 
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      console.log("🔍 Backend URL:", backendUrl);
 
       const response = await fetch(`${backendUrl}/api/solve`, {
         method: "POST",
