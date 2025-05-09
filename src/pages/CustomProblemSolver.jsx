@@ -20,6 +20,11 @@ const CustomProblemSolver = () => {
   const { user } = useUser();
 
   const handleSolve = async () => {
+    if (!user?.id) {
+      alert("Please log in to use the solver.");
+      return;
+    }
+
     setLoading(true);
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -28,7 +33,12 @@ const CustomProblemSolver = () => {
       const response = await fetch(`${backendUrl}/api/solve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ problem, hintMode }),
+        body: JSON.stringify({
+          problem,
+          hintMode,
+          strategy: "algebraic",
+          userId: user.id,
+        }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
