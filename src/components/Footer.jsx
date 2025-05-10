@@ -1,55 +1,27 @@
 // src/components/Footer.jsx
 import React from "react";
-import logo from "../assets/FullLogo_Transparent.png";
+import footerLogo from "../assets/FullLogo_Transparent footer.png";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
-  const footerNavs = [
-    { href: "/terms", name: "Terms" },
-    { href: "/privacy", name: "Privacy" },
-    { href: "/about", name: "About us" },
-    { href: "/contact", name: "Contact" },
-  ];
-
   return (
-    <footer className="pt-10">
-      <div className="max-w-screen-xl mx-auto px-4 text-gray-600 md:px-8">
-        <div className="space-y-6 sm:max-w-md sm:mx-auto sm:text-center">
-          <img src={logo} alt="StudyBuddy Logo" className="w-32 sm:mx-auto" />
-          <p className="text-sm">
-            Powered by Black Lake Forge — helping students learn with clarity and confidence.
-          </p>
-          <div className="items-center gap-x-3 space-y-3 sm:flex sm:justify-center sm:space-y-0">
-            <a
-              href="/login"
-              className="block py-2 px-4 text-center text-white font-medium bg-purple-600 duration-150 hover:bg-purple-500 active:bg-purple-700 rounded-lg shadow-lg hover:shadow-none"
-            >
-              Let's get started
-            </a>
-            <a
-              href="/pricing"
-              className="flex items-center justify-center gap-x-2 py-2 px-4 text-gray-700 hover:text-gray-500 font-medium duration-150 active:bg-gray-100 border rounded-lg"
-            >
-              View pricing
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-                <path
-                  fillRule="evenodd"
-                  d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </a>
-          </div>
+    <footer className="bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 py-10">
+      <div className="max-w-screen-xl mx-auto px-4 md:flex md:items-center md:justify-between">
+        <div className="mb-6 md:mb-0 flex justify-center md:justify-start">
+          <img
+            src={footerLogo}
+            alt="StudyBuddy Logo"
+            className="w-12 sm:w-16 mx-auto md:mx-0"
+          />
         </div>
 
-        <div className="mt-10 py-10 border-t items-center justify-between sm:flex">
-          <p className="text-sm">© {new Date().getFullYear()} StudyBuddy. All rights reserved.</p>
-          <ul className="flex flex-wrap items-center gap-4 mt-6 sm:text-sm sm:mt-0">
-            {footerNavs.map((item, idx) => (
-              <li key={idx} className="text-gray-800 hover:text-gray-500 duration-150">
-                <a href={item.href}>{item.name}</a>
-              </li>
-            ))}
-          </ul>
+        <div className="text-center md:text-right space-y-2">
+          <p className="text-sm">&copy; {new Date().getFullYear()} StudyBuddy+. All rights reserved.</p>
+          <div className="flex justify-center md:justify-end gap-4 text-sm">
+            <Link to="/faq" className="hover:text-purple-600">FAQ</Link>
+            <Link to="/pricing" className="hover:text-purple-600">Pricing</Link>
+            <Link to="/login" className="hover:text-purple-600">Login</Link>
+          </div>
         </div>
       </div>
     </footer>
