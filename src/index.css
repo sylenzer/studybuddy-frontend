@@ -101,8 +101,9 @@ nav .nav-inner {
 nav .nav-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
+  gap: 2rem;
   align-items: center;
+  justify-content: center;
 }
 
 nav a {
