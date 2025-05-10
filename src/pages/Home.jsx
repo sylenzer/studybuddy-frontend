@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import TestimonialCarousel from "../components/TestimonialCarousel";
+import TestimonialCarousel from "../components/FeaturedTestimonialCarousel";
 import FullLogo from "../assets/FullLogo_Transparent.png";
 
 const Home = () => {
