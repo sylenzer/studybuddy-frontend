@@ -92,7 +92,7 @@ nav .nav-inner {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 0.75rem 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -103,13 +103,15 @@ nav .nav-links {
   flex-wrap: wrap;
   gap: 2rem;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
 }
 
 nav a {
+  padding: 0.25rem 0.75 rem;
   color: var(--foreground);
   text-decoration: none;
   font-weight: 600;
+  transition: color 0.2s ease;
 }
 
 nav a:hover {
