@@ -1,23 +1,55 @@
 // src/components/Footer.jsx
 import React from "react";
+import logo from "../assets/FullLogo_Transparent.png";
 
 const Footer = () => {
+  const footerNavs = [
+    { href: "/terms", name: "Terms" },
+    { href: "/privacy", name: "Privacy" },
+    { href: "/about", name: "About us" },
+    { href: "/contact", name: "Contact" },
+  ];
+
   return (
-    <footer className="w-full bg-gray-100 text-center p-4 border-t shadow mt-auto">
-      <div className="flex flex-col md:flex-row justify-between items-center max-w-5xl mx-auto">
-        <div className="text-sm mb-2 md:mb-0">
-          © {new Date().getFullYear()} Black Lake Forge
+    <footer className="pt-10">
+      <div className="max-w-screen-xl mx-auto px-4 text-gray-600 md:px-8">
+        <div className="space-y-6 sm:max-w-md sm:mx-auto sm:text-center">
+          <img src={logo} alt="StudyBuddy Logo" className="w-32 sm:mx-auto" />
+          <p className="text-sm">
+            Powered by Black Lake Forge — helping students learn with clarity and confidence.
+          </p>
+          <div className="items-center gap-x-3 space-y-3 sm:flex sm:justify-center sm:space-y-0">
+            <a
+              href="/login"
+              className="block py-2 px-4 text-center text-white font-medium bg-purple-600 duration-150 hover:bg-purple-500 active:bg-purple-700 rounded-lg shadow-lg hover:shadow-none"
+            >
+              Let's get started
+            </a>
+            <a
+              href="/pricing"
+              className="flex items-center justify-center gap-x-2 py-2 px-4 text-gray-700 hover:text-gray-500 font-medium duration-150 active:bg-gray-100 border rounded-lg"
+            >
+              View pricing
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                <path
+                  fillRule="evenodd"
+                  d="M2 10a.75.75 0 01.75-.75h12.59l-2.1-1.95a.75.75 0 111.02-1.1l3.5 3.25a.75.75 0 010 1.1l-3.5 3.25a.75.75 0 11-1.02-1.1l2.1-1.95H2.75A.75.75 0 012 10z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </a>
+          </div>
         </div>
-        <div className="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0 text-sm">
-          <a href="mailto:bltechnologies318@gmail.com" className="text-blue-600 hover:underline">
-            Email Us: bltechnologies318@gmail.com
-          </a>
-          <a href="https://www.facebook.com/profile.php?id=61575801361510" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-            Facebook: https://www.facebook.com/profile.php?id=61575801361510
-          </a>
-          <a href="#" className="text-blue-600 hover:underline">
-            Instagram
-          </a>
+
+        <div className="mt-10 py-10 border-t items-center justify-between sm:flex">
+          <p className="text-sm">© {new Date().getFullYear()} StudyBuddy. All rights reserved.</p>
+          <ul className="flex flex-wrap items-center gap-4 mt-6 sm:text-sm sm:mt-0">
+            {footerNavs.map((item, idx) => (
+              <li key={idx} className="text-gray-800 hover:text-gray-500 duration-150">
+                <a href={item.href}>{item.name}</a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>
