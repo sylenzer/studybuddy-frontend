@@ -9,102 +9,82 @@ import { useUser } from '@/context/UserContext';
 import SolverHistoryPanel from '@/components/SolverHistoryPanel';
 import { GraphRenderer } from '@/components/GraphRenderer';
 import { GeometryRenderer } from '@/components/GeometryRenderer';
+import HintStrategyStepper from "./HintStrategyStepper";
 
 const CustomProblemSolver = () => {
-  const [problem, setProblem] = useState('');
-  const [result, setResult] = useState('');
-  const [visual, setVisual] = useState(null);
-  const [hintMode, setHintMode] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const { saveProgress } = useSupabaseProgress();
-  const { user } = useUser();
+  const [currentHintStep, setCurrentHintStep] = useState(1);
+  const [parsedHints, setParsedHints] = useState({
+    socratic: "",
+    multipleChoice: "",
+    roadmap: "",
+    stepByStep: ""
+  });
+
+  const getHintKey = (step) => {
+    switch (step) {
+      case 1:
+        return "socratic";
+      case 2:
+        return "multipleChoice";
+      case 3:
+        return "roadmap";
+      case 4:
+        return "stepByStep";
+      default:
+        return "stepByStep";
+    }
+  };
+
+  const extractHintBlock = (text, marker) => {
+    const match = text.match(new RegExp(`\\${marker}([\\s\\S]*?)(?=\\[|$)`));
+    return match ? match[1].trim() : "";
+  };
 
   const handleSolve = async () => {
-    if (!user?.id) {
-      alert("Please log in to use the solver.");
-      return;
-    }
+    const res = await fetch("/api/solve", {
+      method: "POST",
+      body: JSON.stringify({ prompt: "Your problem here" }),
+      headers: { "Content-Type": "application/json" },
+    });
 
-    setLoading(true);
-    try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      console.log("🧠 CustomProblemSolver using backend URL:", backendUrl);
+    const resultText = await res.text();
 
-      const response = await fetch(`${backendUrl}/api/solve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          problem,
-          hintMode,
-          strategy: "algebraic",
-          userId: user.id,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+    const parsed = {
+      socratic: extractHintBlock(resultText, "[HINT_SOC]"),
+      multipleChoice: extractHintBlock(resultText, "[HINT_MC]"),
+      roadmap: extractHintBlock(resultText, "[HINT_ROADMAP]"),
+      stepByStep: extractHintBlock(resultText, "[HINT_STEPS]")
+    };
 
-      setResult(data.result || 'No explanation provided.');
-      setVisual(data.visual || null);
-
-      if (user) {
-        console.log("📤 Sending to Supabase solver_history:", {
-          userId: user.id,
-          problem,
-          result: data.result,
-          visual: data.visual,
-          hintMode,
-        });
-        await saveProgress({
-          problem,
-          result: data.result,
-          visual: data.visual,
-          hintMode,
-        });
-      }
-    } catch (err) {
-      setResult(`❌ Error: ${err.message}`);
-    }
-    setLoading(false);
+    setParsedHints(parsed);
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-4">
-      <textarea
-        className="w-full p-2 border rounded"
-        rows={3}
-        placeholder="Enter a math problem..."
-        value={problem}
-        onChange={(e) => setProblem(e.target.value)}
+    <div className="solver-container">
+      <HintStrategyStepper
+        currentStep={currentHintStep}
+        setCurrentStep={setCurrentHintStep}
       />
-      <div className="flex items-center gap-4">
-        <button
-          onClick={handleSolve}
-          disabled={loading || !problem.trim()}
-          className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark"
-        >
-          {loading ? 'Solving...' : 'Solve'}
-        </button>
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={hintMode}
-            onChange={() => setHintMode(!hintMode)}
-          />
-          Hint Mode
-        </label>
+
+      <div className="hint-output mt-6">
+        <h4>
+          Hint Strategy: <span className="text-purple-600 font-semibold">{getHintKey(currentHintStep)}</span>
+        </h4>
+        <div className="hint-box mt-2">
+          {parsedHints[getHintKey(currentHintStep)] || (
+            <p className="text-gray-500 italic">No hint available for this strategy yet.</p>
+          )}
+        </div>
       </div>
 
-      {result && (
-        <div className="prose max-w-none bg-white p-4 rounded shadow">
-          <ReactMarkdown>{result}</ReactMarkdown>
-        </div>
-      )}
-      {visual?.includes('type: graph') && <GraphRenderer spec={visual} />}
-      {visual?.includes('type: geometry') && <GeometryRenderer spec={visual} />}
-
-      <SolverHistoryPanel onLoadProblem={setProblem} />
+      {/* You can trigger this to test */}
+      <div className="mt-6 text-center">
+        <button onClick={handleSolve} className="bg-purple-600 text-white py-2 px-4 rounded">
+          Solve Sample Problem
+        </button>
+      </div>
     </div>
   );
 };
 
-export default CustomProblemSolver;
+export default CustomProblemSolver

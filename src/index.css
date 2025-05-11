@@ -170,6 +170,86 @@ footer {
   font-size: 0.85rem;
   color: var(--foreground);
 }
+/* Stepper Styling */
+.stepper-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.stepper-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.step-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.step-item.active .step-icon {
+  border-color: #7e22ce;
+  color: #7e22ce;
+}
+
+.step-item.complete .step-icon {
+  background-color: #7e22ce;
+  border-color: #7e22ce;
+  color: white;
+}
+
+.step-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.stepper-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.stepper-buttons button {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.stepper-buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.stepper-buttons button:hover:not(:disabled) {
+  background-color: #6b21a8;
+}
 
 @layer utilities {
   @keyframes glow {
