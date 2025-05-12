@@ -1,14 +1,6 @@
 // src/components/CustomProblemSolver.jsx
-
-import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import rehypeKatex from 'rehype-katex';
-import remarkMath from 'remark-math';
-import { useSupabaseProgress } from '@/hooks/useSupabaseProgress';
-import { useUser } from '@/context/UserContext';
-import SolverHistoryPanel from '@/components/SolverHistoryPanel';
-import { GraphRenderer } from '@/components/GraphRenderer';
-import { GeometryRenderer } from '@/components/GeometryRenderer';
+import React, { useState } from "react";
+import ReactMarkdown from "react-markdown";
 import HintStrategyStepper from "./HintStrategyStepper";
 
 const CustomProblemSolver = () => {
@@ -41,6 +33,8 @@ const CustomProblemSolver = () => {
   };
 
   const handleSolve = async () => {
+    console.log("✅ handleSolve triggered");
+
     const res = await fetch("/api/solve", {
       method: "POST",
       body: JSON.stringify({ prompt: "Your problem here" }),
@@ -48,6 +42,7 @@ const CustomProblemSolver = () => {
     });
 
     const resultText = await res.text();
+    console.log("🧠 Raw response:", resultText);
 
     const parsed = {
       socratic: extractHintBlock(resultText, "[HINT_SOC]"),
@@ -71,13 +66,12 @@ const CustomProblemSolver = () => {
           Hint Strategy: <span className="text-purple-600 font-semibold">{getHintKey(currentHintStep)}</span>
         </h4>
         <div className="hint-box mt-2">
-          {parsedHints[getHintKey(currentHintStep)] || (
-            <p className="text-gray-500 italic">No hint available for this strategy yet.</p>
-          )}
+          <ReactMarkdown>
+            {parsedHints[getHintKey(currentHintStep)] || "_No hint available for this strategy yet._"}
+          </ReactMarkdown>
         </div>
       </div>
 
-      {/* You can trigger this to test */}
       <div className="mt-6 text-center">
         <button onClick={handleSolve} className="bg-purple-600 text-white py-2 px-4 rounded">
           Solve Sample Problem
@@ -87,4 +81,4 @@ const CustomProblemSolver = () => {
   );
 };
 
-export default CustomProblemSolver
+export default CustomProblemSolver;
