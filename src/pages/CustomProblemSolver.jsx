@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "../lib/supabaseClient";
 import { Lightbulb, ListChecks, Map, ArrowRightCircle, ImageIcon, ChevronDown, ChevronRight } from "lucide-react";
+import VisualRenderer from "../components/VisualRenderer";
 
 const SHOW_HINTS = true;
 
@@ -111,12 +112,12 @@ const CustomProblemSolver = () => {
 
   return (
     <div className="solver-container max-w-xl mx-auto mt-10">
-      <input
-        type="text"
+      <textarea
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Enter your math problem..."
-        className="w-full p-3 border border-gray-300 rounded-md shadow-sm"
+        placeholder="Enter your math problem or word problem..."
+        rows={4}
+        className="w-full p-3 border border-gray-300 rounded-md shadow-sm resize-y min-h-[4rem]"
       />
       <button
         onClick={handleSolve}
@@ -160,7 +161,11 @@ const CustomProblemSolver = () => {
                   )}
                 </div>
                 {!collapsed[label] && (
-                  <ReactMarkdown>{content}</ReactMarkdown>
+                  label === "Visual" ? (
+                    <VisualRenderer content={content} />
+                  ) : (
+                    <ReactMarkdown>{content}</ReactMarkdown>
+                  )
                 )}
               </div>
             )
