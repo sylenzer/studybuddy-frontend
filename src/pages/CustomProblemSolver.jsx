@@ -1,4 +1,4 @@
-// src/components/CustomProblemSolver.jsx
+// src/pages/CustomProblemSolver.jsx
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import HintStrategyStepper from "../components/HintStrategyStepper";
@@ -6,12 +6,9 @@ import HintStrategyStepper from "../components/HintStrategyStepper";
 const CustomProblemSolver = () => {
   const [currentHintStep, setCurrentHintStep] = useState(1);
   const [prompt, setPrompt] = useState("");
-  const [parsedHints, setParsedHints] = useState({
-    socratic: "",
-    multipleChoice: "",
-    roadmap: "",
-    stepByStep: ""
-  });
+  const [parsedHints, setParsedHints] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const getHintKey = (step) => {
     switch (step) {
@@ -34,25 +31,38 @@ const CustomProblemSolver = () => {
   };
 
   const handleSolve = async () => {
-    console.log("✅ handleSolve triggered");
+    if (!prompt.trim()) return;
+    setLoading(true);
+    setError("");
 
-    const res = await fetch("https://studybuddy-backend-production.up.railway.app/api/solve", {
-      method: "POST",
-      body: JSON.stringify({ prompt }),
-      headers: { "Content-Type": "application/json" },
-    });
+    try {
+      const res = await fetch("https://studybuddy-backend-production.up.railway.app/api/solve", {
+        method: "POST",
+        body: JSON.stringify({ prompt }),
+        headers: { "Content-Type": "application/json" },
+      });
 
-    const resultText = await res.text();
-    console.log("🧠 Raw response:", resultText);
+      if (!res.ok) {
+        throw new Error(`❌ Server returned ${res.status}`);
+      }
 
-    const parsed = {
-      socratic: extractHintBlock(resultText, "[HINT_SOC]"),
-      multipleChoice: extractHintBlock(resultText, "[HINT_MC]"),
-      roadmap: extractHintBlock(resultText, "[HINT_ROADMAP]"),
-      stepByStep: extractHintBlock(resultText, "[HINT_STEPS]")
-    };
+      const resultText = await res.text();
+      console.log("🧠 Raw response:", resultText);
 
-    setParsedHints(parsed);
+      const parsed = {
+        socratic: extractHintBlock(resultText, "[HINT_SOC]"),
+        multipleChoice: extractHintBlock(resultText, "[HINT_MC]"),
+        roadmap: extractHintBlock(resultText, "[HINT_ROADMAP]"),
+        stepByStep: extractHintBlock(resultText, "[HINT_STEPS]")
+      };
+
+      setParsedHints(parsed);
+    } catch (err) {
+      console.error("Solve error:", err);
+      setError(err.message || "Unknown error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,31 +77,38 @@ const CustomProblemSolver = () => {
         />
         <button
           onClick={handleSolve}
-          className="mt-4 bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700"
+          disabled={loading || !prompt.trim()}
+          className="mt-4 bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 disabled:opacity-50"
         >
-          Solve
+          {loading ? "Solving..." : "Solve"}
         </button>
       </div>
 
-      <HintStrategyStepper
-        currentStep={currentHintStep}
-        setCurrentStep={setCurrentHintStep}
-      />
-
-      <div className="hint-output mt-6">
-        <h4>
-          Hint Strategy: <span className="text-purple-600 font-semibold">{getHintKey(currentHintStep)}</span>
-        </h4>
-        <div className="hint-box mt-2">
-          {parsedHints && typeof parsedHints[getHintKey(currentHintStep)] === "string" ? (
-            <ReactMarkdown>
-              {parsedHints[getHintKey(currentHintStep)]}
-            </ReactMarkdown>
-          ) : (
-            <p className="text-gray-500 italic">No hint available for this strategy yet.</p>
-          )}
+      {error && (
+        <div className="text-red-600 text-center font-semibold mb-4">
+          {error}
         </div>
-      </div>
+      )}
+
+      {parsedHints && (
+        <>
+          <HintStrategyStepper
+            currentStep={currentHintStep}
+            setCurrentStep={setCurrentHintStep}
+          />
+
+          <div className="hint-output mt-6">
+            <h4>
+              Hint Strategy: <span className="text-purple-600 font-semibold">{getHintKey(currentHintStep)}</span>
+            </h4>
+            <div className="hint-box mt-2">
+              <ReactMarkdown>
+                {parsedHints[getHintKey(currentHintStep)] || "_No hint available for this strategy yet._"}
+              </ReactMarkdown>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
