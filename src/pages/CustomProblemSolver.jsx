@@ -40,8 +40,7 @@ const CustomProblemSolver = () => {
   };
 
   const extractHintBlock = (text, marker) => {
-    const regex = new RegExp(`\\*\\*\\[${marker}\\]\\*\\*([^]*?)(?=\\*\\*\\[|$)`, "i");
-    const match = text.match(regex);
+    const match = text.match(new RegExp(`\\${marker}([\\s\\S]*?)(?=\\[|$)`));
     return match ? match[1].trim() : "";
   };
 
@@ -70,10 +69,10 @@ const CustomProblemSolver = () => {
       console.log("✅ Solver result:", resultText);
 
       const parsed = {
-        socratic: extractHintBlock(resultText, "SOCratic"),
-        multipleChoice: extractHintBlock(resultText, "MC"),
-        roadmap: extractHintBlock(resultText, "ROADMAP"),
-        stepByStep: extractHintBlock(resultText, "STEP")
+        socratic: extractHintBlock(resultText, "[HINT_SOC]"),
+        multipleChoice: extractHintBlock(resultText, "[HINT_MC]"),
+        roadmap: extractHintBlock(resultText, "[HINT_ROADMAP]"),
+        stepByStep: extractHintBlock(resultText, "[HINT_STEPS]")
       };
 
       setParsedHints(parsed);
