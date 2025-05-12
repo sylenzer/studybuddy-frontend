@@ -1,6 +1,9 @@
 // src/pages/CustomProblemSolver.jsx
 import React, { useState, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import { supabase } from "../lib/supabaseClient";
+
+const SHOW_HINTS = true;
 
 const CustomProblemSolver = () => {
   const [prompt, setPrompt] = useState("");
@@ -8,6 +11,7 @@ const CustomProblemSolver = () => {
   const [error, setError] = useState("");
   const [userReady, setUserReady] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [resultText, setResultText] = useState("");
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -24,6 +28,7 @@ const CustomProblemSolver = () => {
     if (!prompt.trim()) return;
     setLoading(true);
     setError("");
+    setResultText("");
 
     try {
       const res = await fetch("https://studybuddy-backend-production.up.railway.app/api/solve", {
@@ -41,8 +46,8 @@ const CustomProblemSolver = () => {
         throw new Error(`❌ Server returned ${res.status}`);
       }
 
-      const { result: resultText } = await res.json();
-      console.log("✅ Solver result:", resultText);
+      const { result } = await res.json();
+      setResultText(result);
     } catch (err) {
       console.error("Solve error:", err);
       setError(err.message || "Unknown error");
@@ -73,6 +78,12 @@ const CustomProblemSolver = () => {
       {error && (
         <div className="text-red-600 text-center font-semibold mt-4">
           {error}
+        </div>
+      )}
+
+      {SHOW_HINTS && resultText && (
+        <div className="hint-box mt-6 p-4 border rounded bg-gray-50">
+          <ReactMarkdown>{resultText}</ReactMarkdown>
         </div>
       )}
     </div>
