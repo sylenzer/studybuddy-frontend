@@ -12,6 +12,7 @@ const CustomProblemSolver = () => {
   const [userReady, setUserReady] = useState(false);
   const [userId, setUserId] = useState(null);
   const [resultText, setResultText] = useState("");
+  const [parsedSections, setParsedSections] = useState({});
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -24,11 +25,18 @@ const CustomProblemSolver = () => {
     });
   }, []);
 
+  const extractBlock = (text, tag) => {
+    const regex = new RegExp(`\\*\\*\\[${tag}\\]\\*\\*([^]*?)(?=\\*\\*\\[|$)`, "i");
+    const match = text.match(regex);
+    return match ? match[1].trim() : null;
+  };
+
   const handleSolve = async () => {
     if (!prompt.trim()) return;
     setLoading(true);
     setError("");
     setResultText("");
+    setParsedSections({});
 
     try {
       const res = await fetch("https://studybuddy-backend-production.up.railway.app/api/solve", {
@@ -48,6 +56,16 @@ const CustomProblemSolver = () => {
 
       const { result } = await res.json();
       setResultText(result);
+
+      const sections = {
+        Socratic: extractBlock(result, "Socratic"),
+        "Multiple Choice": extractBlock(result, "MC"),
+        Roadmap: extractBlock(result, "ROADMAP"),
+        "Step-by-Step": extractBlock(result, "STEP"),
+        Visual: extractBlock(result, "VISUAL_RENDER")
+      };
+
+      setParsedSections(sections);
     } catch (err) {
       console.error("Solve error:", err);
       setError(err.message || "Unknown error");
@@ -81,9 +99,16 @@ const CustomProblemSolver = () => {
         </div>
       )}
 
-      {SHOW_HINTS && resultText && (
-        <div className="hint-box mt-6 p-4 border rounded bg-gray-50">
-          <ReactMarkdown>{resultText}</ReactMarkdown>
+      {SHOW_HINTS && (
+        <div className="hint-box mt-6 space-y-6">
+          {Object.entries(parsedSections).map(([label, content]) => (
+            content && (
+              <div key={label} className="p-4 border rounded bg-gray-50">
+                <h3 className="font-bold text-lg mb-2">{label}</h3>
+                <ReactMarkdown>{content}</ReactMarkdown>
+              </div>
+            )
+          ))}
         </div>
       )}
     </div>
