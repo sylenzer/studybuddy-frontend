@@ -1,6 +1,7 @@
 // src/pages/CustomProblemSolver.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import { supabase } from "../lib/supabaseClient";
 import HintStrategyStepper from "../components/HintStrategyStepper";
 
 const CustomProblemSolver = () => {
@@ -9,6 +10,19 @@ const CustomProblemSolver = () => {
   const [parsedHints, setParsedHints] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userReady, setUserReady] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUserId(user.id);
+        setUserReady(true);
+      } else {
+        window.location.href = "/login";
+      }
+    });
+  }, []);
 
   const getHintKey = (step) => {
     switch (step) {
@@ -38,7 +52,12 @@ const CustomProblemSolver = () => {
     try {
       const res = await fetch("https://studybuddy-backend-production.up.railway.app/api/solve", {
         method: "POST",
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          problem: prompt,
+          hintMode: true,
+          strategy: "stepByStep",
+          userId: userId
+        }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -46,7 +65,7 @@ const CustomProblemSolver = () => {
         throw new Error(`❌ Server returned ${res.status}`);
       }
 
-      const resultText = await res.text();
+      const { result: resultText } = await res.json();
       console.log("🧠 Raw response:", resultText);
 
       const parsed = {
@@ -65,6 +84,8 @@ const CustomProblemSolver = () => {
     }
   };
 
+  if (!userReady) return <p className="text-center mt-10">Loading solver...</p>;
+
   return (
     <div className="solver-container">
       <div className="max-w-xl mx-auto mb-6">
@@ -80,7 +101,13 @@ const CustomProblemSolver = () => {
           disabled={loading || !prompt.trim()}
           className="mt-4 bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 disabled:opacity-50"
         >
-          {loading ? "Solving..." : "Solve"}
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <span className="loader" /> Solving...
+            </span>
+          ) : (
+            "Solve"
+          )}
         </button>
       </div>
 
