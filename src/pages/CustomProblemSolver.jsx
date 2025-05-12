@@ -168,4 +168,7 @@ const CustomProblemSolver = () => {
         </div>
       )}
     </div>
-  )
+  );
+};
+
+export default CustomProblemSolver;
