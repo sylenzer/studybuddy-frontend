@@ -60,7 +60,7 @@ const CustomProblemSolver = () => {
     setCollapsed({});
 
     try {
-      const res = await axios.post("/api/solve", {
+      const res = await axios.post("https://studybuddy-backend-production.up.railway.app/api/solve", {
         problem: prompt,
         hintMode: true,
         strategy: "stepByStep",
