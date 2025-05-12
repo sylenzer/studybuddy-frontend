@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "../lib/supabaseClient";
-import { Lightbulb, ListChecks, Map, ArrowRightCircle, ImageIcon } from "lucide-react";
+import { Lightbulb, ListChecks, Map, ArrowRightCircle, ImageIcon, ChevronDown, ChevronRight } from "lucide-react";
 
 const SHOW_HINTS = true;
 
@@ -30,6 +30,7 @@ const CustomProblemSolver = () => {
   const [userId, setUserId] = useState(null);
   const [resultText, setResultText] = useState("");
   const [parsedSections, setParsedSections] = useState({});
+  const [collapsed, setCollapsed] = useState({});
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -54,6 +55,7 @@ const CustomProblemSolver = () => {
     setError("");
     setResultText("");
     setParsedSections({});
+    setCollapsed({});
 
     try {
       const res = await fetch("https://studybuddy-backend-production.up.railway.app/api/solve", {
@@ -91,6 +93,10 @@ const CustomProblemSolver = () => {
     }
   };
 
+  const toggleCollapse = (section) => {
+    setCollapsed((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
+
   if (!userReady) return <p className="text-center mt-10">Loading solver...</p>;
 
   return (
@@ -117,18 +123,30 @@ const CustomProblemSolver = () => {
       )}
 
       {SHOW_HINTS && (
-        <div className="hint-box mt-6 space-y-6">
+        <div className="hint-box mt-6 space-y-4">
           {Object.entries(parsedSections).map(([label, content]) => (
             content && (
               <div
                 key={label}
                 className={`p-4 border-l-4 rounded shadow-sm ${sectionStyles[label] || "border-gray-300 bg-white"}`}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  {sectionIcons[label] || null}
-                  <h3 className="font-bold text-lg">{label}</h3>
+                <div
+                  className="flex items-center justify-between cursor-pointer mb-2"
+                  onClick={() => toggleCollapse(label)}
+                >
+                  <div className="flex items-center gap-2">
+                    {sectionIcons[label] || null}
+                    <h3 className="font-bold text-lg">{label}</h3>
+                  </div>
+                  {collapsed[label] ? (
+                    <ChevronRight className="w-5 h-5 text-gray-500" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-500" />
+                  )}
                 </div>
-                <ReactMarkdown>{content}</ReactMarkdown>
+                {!collapsed[label] && (
+                  <ReactMarkdown>{content}</ReactMarkdown>
+                )}
               </div>
             )
           ))}
