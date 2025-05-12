@@ -1,7 +1,7 @@
 // src/components/CustomProblemSolver.jsx
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import HintStrategyStepper from "./HintStrategyStepper";
+import HintStrategyStepper from "../components/HintStrategyStepper";
 
 const CustomProblemSolver = () => {
   const [currentHintStep, setCurrentHintStep] = useState(1);
