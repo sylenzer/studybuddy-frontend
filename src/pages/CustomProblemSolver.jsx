@@ -66,7 +66,7 @@ const CustomProblemSolver = () => {
       }
 
       const { result: resultText } = await res.json();
-      console.log("🧠 Raw response:", resultText);
+      console.log("✅ Solver result:", resultText);
 
       const parsed = {
         socratic: extractHintBlock(resultText, "[HINT_SOC]"),
