@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "../lib/supabaseClient";
+import { Lightbulb, ListChecks, Map, ArrowRightCircle, ImageIcon } from "lucide-react";
 
 const SHOW_HINTS = true;
 
@@ -11,6 +12,14 @@ const sectionStyles = {
   Roadmap: "border-yellow-500 bg-yellow-50",
   "Step-by-Step": "border-green-500 bg-green-50",
   Visual: "border-gray-500 bg-gray-50"
+};
+
+const sectionIcons = {
+  Socratic: <Lightbulb className="w-5 h-5 text-purple-600" />,
+  "Multiple Choice": <ListChecks className="w-5 h-5 text-blue-600" />,
+  Roadmap: <Map className="w-5 h-5 text-yellow-600" />,
+  "Step-by-Step": <ArrowRightCircle className="w-5 h-5 text-green-600" />,
+  Visual: <ImageIcon className="w-5 h-5 text-gray-600" />
 };
 
 const CustomProblemSolver = () => {
@@ -115,7 +124,10 @@ const CustomProblemSolver = () => {
                 key={label}
                 className={`p-4 border-l-4 rounded shadow-sm ${sectionStyles[label] || "border-gray-300 bg-white"}`}
               >
-                <h3 className="font-bold text-lg mb-2">{label}</h3>
+                <div className="flex items-center gap-2 mb-2">
+                  {sectionIcons[label] || null}
+                  <h3 className="font-bold text-lg">{label}</h3>
+                </div>
                 <ReactMarkdown>{content}</ReactMarkdown>
               </div>
             )
