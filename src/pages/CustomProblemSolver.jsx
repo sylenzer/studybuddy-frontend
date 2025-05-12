@@ -97,6 +97,16 @@ const CustomProblemSolver = () => {
     setCollapsed((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
+  const collapseAll = () => {
+    const all = Object.fromEntries(Object.keys(parsedSections).map((key) => [key, true]));
+    setCollapsed(all);
+  };
+
+  const expandAll = () => {
+    const all = Object.fromEntries(Object.keys(parsedSections).map((key) => [key, false]));
+    setCollapsed(all);
+  };
+
   if (!userReady) return <p className="text-center mt-10">Loading solver...</p>;
 
   return (
@@ -124,6 +134,11 @@ const CustomProblemSolver = () => {
 
       {SHOW_HINTS && (
         <div className="hint-box mt-6 space-y-4">
+          <div className="flex justify-end gap-4 mb-2">
+            <button onClick={expandAll} className="text-sm text-green-700 hover:underline">Expand All</button>
+            <button onClick={collapseAll} className="text-sm text-gray-600 hover:underline">Collapse All</button>
+          </div>
+
           {Object.entries(parsedSections).map(([label, content]) => (
             content && (
               <div
@@ -153,7 +168,4 @@ const CustomProblemSolver = () => {
         </div>
       )}
     </div>
-  );
-};
-
-export default CustomProblemSolver;
+  )
