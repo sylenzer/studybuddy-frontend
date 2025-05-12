@@ -5,6 +5,7 @@ import HintStrategyStepper from "../components/HintStrategyStepper";
 
 const CustomProblemSolver = () => {
   const [currentHintStep, setCurrentHintStep] = useState(1);
+  const [prompt, setPrompt] = useState("");
   const [parsedHints, setParsedHints] = useState({
     socratic: "",
     multipleChoice: "",
@@ -35,9 +36,9 @@ const CustomProblemSolver = () => {
   const handleSolve = async () => {
     console.log("✅ handleSolve triggered");
 
-    const res = await fetch("/api/solve", {
+    const res = await fetch("https://studybuddy-backend-production.up.railway.app/api/solve", {
       method: "POST",
-      body: JSON.stringify({ prompt: "Your problem here" }),
+      body: JSON.stringify({ prompt }),
       headers: { "Content-Type": "application/json" },
     });
 
@@ -56,6 +57,22 @@ const CustomProblemSolver = () => {
 
   return (
     <div className="solver-container">
+      <div className="max-w-xl mx-auto mb-6">
+        <input
+          type="text"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Enter your math problem..."
+          className="w-full p-3 border border-gray-300 rounded-md shadow-sm"
+        />
+        <button
+          onClick={handleSolve}
+          className="mt-4 bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700"
+        >
+          Solve
+        </button>
+      </div>
+
       <HintStrategyStepper
         currentStep={currentHintStep}
         setCurrentStep={setCurrentHintStep}
@@ -66,16 +83,14 @@ const CustomProblemSolver = () => {
           Hint Strategy: <span className="text-purple-600 font-semibold">{getHintKey(currentHintStep)}</span>
         </h4>
         <div className="hint-box mt-2">
-          <ReactMarkdown>
-            {parsedHints[getHintKey(currentHintStep)] || "_No hint available for this strategy yet._"}
-          </ReactMarkdown>
+          {parsedHints && typeof parsedHints[getHintKey(currentHintStep)] === "string" ? (
+            <ReactMarkdown>
+              {parsedHints[getHintKey(currentHintStep)]}
+            </ReactMarkdown>
+          ) : (
+            <p className="text-gray-500 italic">No hint available for this strategy yet.</p>
+          )}
         </div>
-      </div>
-
-      <div className="mt-6 text-center">
-        <button onClick={handleSolve} className="bg-purple-600 text-white py-2 px-4 rounded">
-          Solve Sample Problem
-        </button>
       </div>
     </div>
   );
