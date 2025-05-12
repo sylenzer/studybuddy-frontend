@@ -5,6 +5,14 @@ import { supabase } from "../lib/supabaseClient";
 
 const SHOW_HINTS = true;
 
+const sectionStyles = {
+  Socratic: "border-purple-500 bg-purple-50",
+  "Multiple Choice": "border-blue-500 bg-blue-50",
+  Roadmap: "border-yellow-500 bg-yellow-50",
+  "Step-by-Step": "border-green-500 bg-green-50",
+  Visual: "border-gray-500 bg-gray-50"
+};
+
 const CustomProblemSolver = () => {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -103,7 +111,10 @@ const CustomProblemSolver = () => {
         <div className="hint-box mt-6 space-y-6">
           {Object.entries(parsedSections).map(([label, content]) => (
             content && (
-              <div key={label} className="p-4 border rounded bg-gray-50">
+              <div
+                key={label}
+                className={`p-4 border-l-4 rounded shadow-sm ${sectionStyles[label] || "border-gray-300 bg-white"}`}
+              >
                 <h3 className="font-bold text-lg mb-2">{label}</h3>
                 <ReactMarkdown>{content}</ReactMarkdown>
               </div>
