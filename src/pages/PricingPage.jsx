@@ -54,14 +54,14 @@ const PricingPage = () => {
   };
 
   return (
-    <section className="py-14 bg-white">
+    <section className="py-14">
       <div className="max-w-screen-xl mx-auto px-4 md:px-8">
         <div className="max-w-xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-gray-800 sm:text-4xl">
             Buy Token Packs
           </h2>
           <p className="mt-3 text-gray-600">
-            Use tokens in the Custom Problem Solver. 1 token = 1 solve.
+            Use tokens with the Custom Problem Solver. 1 token = 1 solve.
           </p>
         </div>
 
@@ -69,14 +69,12 @@ const PricingPage = () => {
           {tokenPacks.map((pack, idx) => (
             <div
               key={idx}
-              className={`relative flex flex-col rounded-xl border bg-white p-6 shadow transition duration-300 hover:shadow-xl ${
+              className={`relative flex flex-col rounded-xl border bg-white p-6 card-hover ${
                 pack.bestValue ? "border-indigo-500" : "border-gray-200"
               }`}
             >
               {pack.bestValue && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 transform rounded-full bg-indigo-600 px-4 py-1 text-xs font-semibold text-white shadow-md">
-                  Best Value
-                </span>
+                <span className="badge-floating">Best Value</span>
               )}
 
               <div className="flex-1">
@@ -107,7 +105,7 @@ const PricingPage = () => {
         </div>
 
         <p className="mt-10 text-center text-sm text-gray-500">
-          Tokens never expire. You can use them anytime.
+          Tokens never expire. Use them anytime.
         </p>
       </div>
     </section>
