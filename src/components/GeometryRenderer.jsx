@@ -1,101 +1,95 @@
-// GeometryRenderer.jsx
+// src/components/GeometryRenderer.jsx
 import React from "react";
 
-export const GeometryRenderer = ({ data }) => {
-  if (!data || !data.objects) return null;
+const parseDimension = (content, label) => {
+  const regex = new RegExp(`${label}\s*=\s*(\d+(\.\d+)?)`, "i");
+  const match = content.match(regex);
+  return match ? parseFloat(match[1]) : null;
+};
 
-  const renderShape = (obj, index) => {
-    switch (obj.shape) {
-      case "circle":
-        return (
-          <circle
-            key={index}
-            cx={obj.center[0]}
-            cy={obj.center[1]}
-            r={obj.radius}
-            stroke="black"
-            strokeWidth="2"
-            fill="none"
-          />
-        );
-      case "triangle":
-        return (
-          <polygon
-            key={index}
-            points={obj.points.map(p => p.join(",")).join(" ")}
-            stroke="black"
-            strokeWidth="2"
-            fill="none"
-          />
-        );
-      case "square":
-        return (
-          <rect
-            key={index}
-            x={obj.topLeft[0]}
-            y={obj.topLeft[1]}
-            width={obj.size}
-            height={obj.size}
-            stroke="black"
-            strokeWidth="2"
-            fill="none"
-          />
-        );
-      case "line":
-        return (
-          <line
-            key={index}
-            x1={obj.point1[0]}
-            y1={obj.point1[1]}
-            x2={obj.point2[0]}
-            y2={obj.point2[1]}
-            stroke="black"
-            strokeWidth="2"
-          />
-        );
-      case "segment":
-        return (
-          <line
-            key={index}
-            x1={obj.start[0]}
-            y1={obj.start[1]}
-            x2={obj.end[0]}
-            y2={obj.end[1]}
-            stroke="black"
-            strokeWidth="2"
-            strokeDasharray="5,5"
-          />
-        );
-      case "angle":
-        // Simple angle with arc approximation
-        const [cx, cy] = obj.vertex;
-        const r = obj.radius || 30;
-        const startAngle = obj.startAngle || 0;
-        const endAngle = obj.endAngle || 45;
-        const largeArcFlag = (endAngle - startAngle) <= 180 ? "0" : "1";
-        const x1 = cx + r * Math.cos((startAngle * Math.PI) / 180);
-        const y1 = cy + r * Math.sin((startAngle * Math.PI) / 180);
-        const x2 = cx + r * Math.cos((endAngle * Math.PI) / 180);
-        const y2 = cy + r * Math.sin((endAngle * Math.PI) / 180);
+const GeometryRenderer = ({ content }) => {
+  const lower = content.toLowerCase();
 
-        return (
-          <path
-            key={index}
-            d={`M ${cx},${cy} L ${x1},${y1} A ${r},${r} 0 ${largeArcFlag},1 ${x2},${y2} Z`}
-            stroke="black"
-            strokeWidth="2"
-            fill="none"
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  const base = parseDimension(content, "base") || 100;
+  const height = parseDimension(content, "height") || 100;
+  const radius = parseDimension(content, "radius") || 60;
+
+  if (lower.includes("right triangle") || lower.includes("angle")) {
+    const scaleBase = Math.min(base, 120);
+    const scaleHeight = Math.min(height, 120);
+    return (
+      <svg className="geometry-canvas" viewBox="0 0 200 200">
+        <polygon
+          points={`40,160 ${40 + scaleBase},160 40,${160 - scaleHeight}`}
+          className="geometry-shape"
+        />
+        <text x="42" y="155" fontSize="12" fill="#333">90°</text>
+        <text x="{40 + scaleBase / 2}" y="175" fontSize="12" fill="#333">base = {base}</text>
+        <text x="10" y="{160 - scaleHeight / 2}" fontSize="12" fill="#333">height = {height}</text>
+      </svg>
+    );
+  }
+
+  if (lower.includes("triangle")) {
+    const baseStart = 100 - base / 2;
+    const baseEnd = 100 + base / 2;
+    const scaledHeight = Math.min(height, 150);
+    return (
+      <svg className="geometry-canvas" viewBox="0 0 200 200">
+        <polygon
+          points={`${100},${200 - scaledHeight} ${baseStart},180 ${baseEnd},180`}
+          className="geometry-shape"
+        />
+        <text x="80" y="195" fontSize="12" fill="#333">base = {base}</text>
+        <text x="105" y="80" fontSize="12" fill="#333">height = {height}</text>
+      </svg>
+    );
+  }
+
+  if (lower.includes("square")) {
+    const size = Math.min(base, 120);
+    return (
+      <svg className="geometry-canvas" viewBox="0 0 200 200">
+        <rect x="40" y="40" width={size} height={size} className="geometry-shape" />
+        <text x="60" y="{50 + size}" fontSize="12" fill="#333">side = {base}</text>
+      </svg>
+    );
+  }
+
+  if (lower.includes("circle")) {
+    const scaledRadius = Math.min(radius, 80);
+    return (
+      <svg className="geometry-canvas" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r={scaledRadius} className="geometry-shape" />
+        <text x="100" y="{100 + scaledRadius + 12}" fontSize="12" fill="#333">r = {radius}</text>
+      </svg>
+    );
+  }
+
+  if (lower.includes("cone") || lower.includes("pyramid")) {
+    return (
+      <svg className="geometry-canvas" viewBox="0 0 200 200">
+        <polygon points="100,30 30,170 170,170" className="geometry-shape" />
+        <line x1="100" y1="30" x2="100" y2="170" stroke="#333" strokeDasharray="4" />
+      </svg>
+    );
+  }
+
+  if (lower.includes("cube") || lower.includes("prism")) {
+    return (
+      <svg className="geometry-canvas" viewBox="0 0 200 200">
+        <rect x="50" y="50" width="100" height="100" className="geometry-shape" fillOpacity="0.3" />
+        <polyline points="50,50 30,30 130,30 150,50" stroke="#333" fill="none" strokeWidth="2" />
+        <line x1="130" y1="30" x2="130" y2="130" stroke="#333" />
+        <line x1="150" y1="50" x2="150" y2="150" stroke="#333" />
+      </svg>
+    );
+  }
 
   return (
-    <svg width="600" height="400" className="border mx-auto bg-white">
-      {data.objects.map((obj, index) => renderShape(obj, index))}
-    </svg>
+    <div className="p-2 border rounded bg-white">
+      <p className="text-sm italic text-gray-600">[Geometry placeholder: {content}]</p>
+    </div>
   );
 };
 

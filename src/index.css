@@ -250,6 +250,65 @@ footer {
 .stepper-buttons button:hover:not(:disabled) {
   background-color: #6b21a8;
 }
+/* === GraphRenderer Responsive + Dark Mode === */
+.graph-canvas {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  display: block;
+  margin: auto;
+}
+
+.graph-axis {
+  stroke: #999;
+  stroke-width: 1;
+}
+
+.graph-curve {
+  stroke: steelblue;
+  stroke-width: 2;
+  fill: none;
+}
+
+.dark .graph-axis {
+  stroke: #666;
+}
+
+.dark .graph-curve {
+  stroke: #7dd3fc; /* light cyan for dark mode */
+}
+
+/* === GeometryRenderer Styles === */
+.geometry-canvas {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  display: block;
+  margin: auto;
+}
+
+.geometry-shape {
+  fill: #facc15; /* Tailwind yellow-400 */
+  stroke: #333;
+  stroke-width: 2;
+}
+
+.dark .geometry-shape {
+  fill: #fde68a; /* lighter yellow for dark mode */
+  stroke: #ddd;
+}
+
+.geometry-label {
+  font-size: 12px;
+  fill: #333;
+}
+
+.dark .geometry-label {
+  fill: #ddd;
+}
+
 
 @layer utilities {
   @keyframes glow {

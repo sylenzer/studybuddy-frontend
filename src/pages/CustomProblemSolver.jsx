@@ -4,6 +4,8 @@ import ReactMarkdown from "react-markdown";
 import { supabase } from "../lib/supabaseClient";
 import { Lightbulb, ListChecks, Map, ArrowRightCircle, ImageIcon, ChevronDown, ChevronRight } from "lucide-react";
 import VisualRenderer from "../components/VisualRenderer";
+import GraphRenderer from "../components/GraphRenderer";
+import GeometryRenderer from "../components/GeometryRenderer";
 import axios from "axios";
 
 const SHOW_HINTS = true;
@@ -154,11 +156,25 @@ const CustomProblemSolver = () => {
                   )}
                 </div>
                 {!collapsed[label] && (
-                  label === "Visual" ? (
-                    <VisualRenderer content={content} />
-                  ) : (
-                    <ReactMarkdown>{content}</ReactMarkdown>
-                  )
+                  !collapsed[label] && (
+  label === "Visual" ? (() => {
+    try {
+      const parsed = JSON.parse(content);
+      if (content.includes("graphType")) {
+        return <GraphRenderer data={parsed} />;
+      } else if (content.includes("geometryType")) {
+        return <GeometryRenderer data={parsed} />;
+      } else {
+        return <VisualRenderer content={content} />;
+      }
+    } catch (e) {
+      console.warn("Invalid JSON for visual content:", e);
+      return <VisualRenderer content={content} />;
+    }
+  })() : (
+    <ReactMarkdown>{content}</ReactMarkdown>
+  )
+)
                 )}
               </div>
             )
