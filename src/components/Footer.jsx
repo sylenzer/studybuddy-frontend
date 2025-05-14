@@ -23,10 +23,10 @@ const Footer = () => {
         <p className="footer-contact">
           Contact us:{" "}
           <a
-            href="mailto:support@studybuddy.ai"
+            href="mailto:bltechnologies318@gmail.com"
             className="footer-email"
           >
-            support@studybuddy.ai
+            bltechnologies318@gmail.com
           </a>
         </p>
 
