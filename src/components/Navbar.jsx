@@ -15,6 +15,14 @@ const Navbar = () => {
           <Link to="/faq">FAQ</Link>
           <Link to="/pricing">Pricing</Link>
           <Link to="/login">Login</Link>
+
+          {/* ✨ Signup Button with Badge */}
+          <div className="signup-container">
+            <Link to="/signup" className="signup-button">
+              Sign up
+            </Link>
+            <span className="signup-badge">🎉 50 free tokens</span>
+          </div>
         </div>
       </div>
     </nav>
