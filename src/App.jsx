@@ -9,6 +9,7 @@ import SolverContainer from "./pages/CustomProblemSolver";
 import PricingPage from "./pages/PricingPage";
 import FAQ from "./pages/FAQ";
 import ProtectedRoute from "./components/ProtectedRoute";
+import TermsPage from "./pages/TermsPage";
 
 const App = () => {
   return (
@@ -28,6 +29,8 @@ const App = () => {
             />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/terms" element={<TermsPage />} />
+            import PrivacyPage from "./pages/PrivacyPage";
           </Routes>
         </Layout>
       </LoadingProvider>

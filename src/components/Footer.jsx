@@ -18,6 +18,8 @@ const Footer = () => {
           <Link to="/pricing">Pricing</Link>
           <Link to="/about">About</Link>
           <Link to="/login">Login</Link>
+          <Link to="/terms">Terms</Link>
+<Link to="/privacy">Privacy</Link>
         </div>
 
         <p className="footer-contact">
