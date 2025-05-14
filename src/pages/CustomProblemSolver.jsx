@@ -1,12 +1,21 @@
 // src/pages/CustomProblemSolver.jsx
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
-import { supabase } from "../lib/supabaseClient";
-import { Lightbulb, ListChecks, Map, ArrowRightCircle, ImageIcon, ChevronDown, ChevronRight } from "lucide-react";
-import VisualRenderer from "../components/VisualRenderer";
-import GraphRenderer from "../components/GraphRenderer";
-import GeometryRenderer from "../components/GeometryRenderer";
 import axios from "axios";
+import { supabase } from "@/lib/supabaseClient";
+import { useTokenManager } from "@/hooks/useTokenManager";
+import {
+  Lightbulb,
+  ListChecks,
+  Map,
+  ArrowRightCircle,
+  ImageIcon,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
+import GraphRenderer from "@/components/GraphRenderer";
+import GeometryRenderer from "@/components/GeometryRenderer";
+import VisualRenderer from "@/components/VisualRenderer";
 
 const SHOW_HINTS = true;
 
@@ -15,7 +24,7 @@ const sectionStyles = {
   "Multiple Choice": "border-blue-500 bg-blue-50",
   Roadmap: "border-yellow-500 bg-yellow-50",
   "Step-by-Step": "border-green-500 bg-green-50",
-  Visual: "border-gray-500 bg-gray-50"
+  Visual: "border-gray-500 bg-gray-50",
 };
 
 const sectionIcons = {
@@ -23,7 +32,7 @@ const sectionIcons = {
   "Multiple Choice": <ListChecks className="w-5 h-5 text-blue-600" />,
   Roadmap: <Map className="w-5 h-5 text-yellow-600" />,
   "Step-by-Step": <ArrowRightCircle className="w-5 h-5 text-green-600" />,
-  Visual: <ImageIcon className="w-5 h-5 text-gray-600" />
+  Visual: <ImageIcon className="w-5 h-5 text-gray-600" />,
 };
 
 const CustomProblemSolver = () => {
@@ -32,20 +41,42 @@ const CustomProblemSolver = () => {
   const [error, setError] = useState("");
   const [userReady, setUserReady] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
   const [resultText, setResultText] = useState("");
   const [parsedSections, setParsedSections] = useState({});
   const [collapsed, setCollapsed] = useState({});
+  const [tokenBalance, setTokenBalance] = useState(null);
+  const [tokenLoading, setTokenLoading] = useState(true);
 
+  // Fetch user and token
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
         setUserReady(true);
       } else {
         window.location.href = "/login";
       }
-    });
+
+      const sessionRes = await supabase.auth.getSession();
+      setAccessToken(sessionRes?.data?.session?.access_token || null);
+    };
+    fetchUser();
   }, []);
+
+  const tokenManager = useTokenManager(userId, accessToken);
+
+  useEffect(() => {
+    const fetchTokens = async () => {
+      if (tokenManager && userId && accessToken) {
+        const tokens = await tokenManager.getTokens();
+        setTokenBalance(tokens);
+        setTokenLoading(false);
+      }
+    };
+    fetchTokens();
+  }, [tokenManager, userId, accessToken]);
 
   const extractBlock = (text, tag) => {
     const regex = new RegExp(`\\*\\*\\[${tag}\\]\\*\\*([^]*?)(?=\\*\\*\\[|$)`, "i");
@@ -66,7 +97,7 @@ const CustomProblemSolver = () => {
         problem: prompt,
         hintMode: true,
         strategy: "stepByStep",
-        userId: userId
+        userId: userId,
       });
 
       const result = res.data.result;
@@ -77,10 +108,18 @@ const CustomProblemSolver = () => {
         "Multiple Choice": extractBlock(result, "MC"),
         Roadmap: extractBlock(result, "ROADMAP"),
         "Step-by-Step": extractBlock(result, "STEP"),
-        Visual: extractBlock(result, "VISUAL_RENDER")
+        Visual: extractBlock(result, "VISUAL_RENDER"),
       };
 
       setParsedSections(sections);
+
+      // Spend 1 token and refresh
+      if (tokenManager) {
+        await tokenManager.spendTokens(1);
+        const newBalance = await tokenManager.getTokens();
+        setTokenBalance(newBalance);
+      }
+
     } catch (err) {
       console.error("Solve error:", err);
       setError(err.message || "Unknown error");
@@ -107,6 +146,13 @@ const CustomProblemSolver = () => {
 
   return (
     <div className="solver-container max-w-xl mx-auto mt-10">
+      {/* Token Balance */}
+      {!tokenLoading && tokenBalance !== null && (
+        <div className="text-right text-sm text-indigo-600 font-semibold mb-2">
+          💎 {tokenBalance} tokens remaining
+        </div>
+      )}
+
       <textarea
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
@@ -156,25 +202,17 @@ const CustomProblemSolver = () => {
                   )}
                 </div>
                 {!collapsed[label] && (
-                  !collapsed[label] && (
-  label === "Visual" ? (() => {
-    try {
-      const parsed = JSON.parse(content);
-      if (content.includes("graphType")) {
-        return <GraphRenderer data={parsed} />;
-      } else if (content.includes("geometryType")) {
-        return <GeometryRenderer data={parsed} />;
-      } else {
-        return <VisualRenderer content={content} />;
-      }
-    } catch (e) {
-      console.warn("Invalid JSON for visual content:", e);
-      return <VisualRenderer content={content} />;
-    }
-  })() : (
-    <ReactMarkdown>{content}</ReactMarkdown>
-  )
-)
+                  label === "Visual" ? (
+                    content.includes("graphType") ? (
+                      <GraphRenderer data={JSON.parse(content)} />
+                    ) : content.includes("geometryType") ? (
+                      <GeometryRenderer data={JSON.parse(content)} />
+                    ) : (
+                      <VisualRenderer content={content} />
+                    )
+                  ) : (
+                    <ReactMarkdown>{content}</ReactMarkdown>
+                  )
                 )}
               </div>
             )
