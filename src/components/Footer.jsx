@@ -12,12 +12,27 @@ const Footer = () => {
           alt="StudyBuddy Logo"
           className="w-12 sm:w-16"
         />
+
         <div className="footer-links">
           <Link to="/faq">FAQ</Link>
           <Link to="/pricing">Pricing</Link>
+          <Link to="/about">About</Link>
           <Link to="/login">Login</Link>
         </div>
-        <p className="footer-copy">&copy; {new Date().getFullYear()} StudyBuddy+. All rights reserved.</p>
+
+        <p className="footer-contact">
+          Contact us:{" "}
+          <a
+            href="mailto:support@studybuddy.ai"
+            className="footer-email"
+          >
+            support@studybuddy.ai
+          </a>
+        </p>
+
+        <p className="footer-copy">
+          &copy; {new Date().getFullYear()} StudyBuddy+. All rights reserved.
+        </p>
       </div>
     </footer>
   );
