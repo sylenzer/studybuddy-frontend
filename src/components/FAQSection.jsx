@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useLoading } from "../context/LoadingContext";
 import FAQReviewForm from "./FAQReviewForm";
 
-const symbols = ["+", "−", "×", "÷", "π", "√", "Σ"];
 
 const faqs = [
   {
@@ -13,7 +12,7 @@ const faqs = [
   },
   {
     question: "Is StudyBuddy+ free to use?",
-    answer: "Yes! Students can get started for free. Teachers can access premium features by verifying a school email."
+    answer: "No it cost money. You must sign up for an account. You will be redirect to stripe for payment."
   },
   {
     question: "Can I track my learning progress?",
