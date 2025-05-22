@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient";
 import { useTokenManager } from "@/hooks/useTokenManager";
 import {
   Lightbulb,
@@ -13,9 +13,9 @@ import {
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
-import GraphRenderer from "@/components/GraphRenderer";
-import GeometryRenderer from "@/components/GeometryRenderer";
-import VisualRenderer from "@/components/VisualRenderer";
+import VisualRenderer from "../components/VisualRenderer";
+import GraphRenderer from "../components/GraphRenderer";
+import GeometryRenderer from "../components/GeometryRenderer";
 
 const SHOW_HINTS = true;
 
@@ -35,6 +35,8 @@ const sectionIcons = {
   Visual: <ImageIcon className="w-5 h-5 text-gray-600" />,
 };
 
+const displayOrder = ["Socratic", "Roadmap", "Step-by-Step", "Visual", "Multiple Choice"];
+
 const CustomProblemSolver = () => {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -42,27 +44,24 @@ const CustomProblemSolver = () => {
   const [userReady, setUserReady] = useState(false);
   const [userId, setUserId] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+  const [tokenBalance, setTokenBalance] = useState(null);
+  const [tokenLoading, setTokenLoading] = useState(true);
   const [resultText, setResultText] = useState("");
   const [parsedSections, setParsedSections] = useState({});
   const [collapsed, setCollapsed] = useState({});
-  const [tokenBalance, setTokenBalance] = useState(null);
-  const [tokenLoading, setTokenLoading] = useState(true);
 
-  // Fetch user and token
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+    supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
         setUserId(user.id);
         setUserReady(true);
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session) setAccessToken(session.access_token);
+        });
       } else {
         window.location.href = "/login";
       }
-
-      const sessionRes = await supabase.auth.getSession();
-      setAccessToken(sessionRes?.data?.session?.access_token || null);
-    };
-    fetchUser();
+    });
   }, []);
 
   const tokenManager = useTokenManager(userId, accessToken);
@@ -113,13 +112,11 @@ const CustomProblemSolver = () => {
 
       setParsedSections(sections);
 
-      // Spend 1 token and refresh
       if (tokenManager) {
         await tokenManager.spendTokens(1);
         const newBalance = await tokenManager.getTokens();
         setTokenBalance(newBalance);
       }
-
     } catch (err) {
       console.error("Solve error:", err);
       setError(err.message || "Unknown error");
@@ -133,12 +130,12 @@ const CustomProblemSolver = () => {
   };
 
   const collapseAll = () => {
-    const all = Object.fromEntries(Object.keys(parsedSections).map((key) => [key, true]));
+    const all = Object.fromEntries(displayOrder.map((key) => [key, true]));
     setCollapsed(all);
   };
 
   const expandAll = () => {
-    const all = Object.fromEntries(Object.keys(parsedSections).map((key) => [key, false]));
+    const all = Object.fromEntries(displayOrder.map((key) => [key, false]));
     setCollapsed(all);
   };
 
@@ -146,7 +143,6 @@ const CustomProblemSolver = () => {
 
   return (
     <div className="solver-container max-w-xl mx-auto mt-10">
-      {/* Token Balance */}
       {!tokenLoading && tokenBalance !== null && (
         <div className="text-right text-sm text-indigo-600 font-semibold mb-2">
           💎 {tokenBalance} tokens remaining
@@ -177,46 +173,59 @@ const CustomProblemSolver = () => {
       {SHOW_HINTS && (
         <div className="hint-box mt-6 space-y-4">
           <div className="flex justify-end gap-4 mb-2">
-            <button onClick={expandAll} className="text-sm text-green-700 hover:underline">Expand All</button>
-            <button onClick={collapseAll} className="text-sm text-gray-600 hover:underline">Collapse All</button>
+            <button onClick={expandAll} className="text-sm text-green-700 hover:underline">
+              Expand All
+            </button>
+            <button onClick={collapseAll} className="text-sm text-gray-600 hover:underline">
+              Collapse All
+            </button>
           </div>
 
-          {Object.entries(parsedSections).map(([label, content]) => (
-            content && (
-              <div
-                key={label}
-                className={`p-4 border-l-4 rounded shadow-sm ${sectionStyles[label] || "border-gray-300 bg-white"}`}
-              >
+          {displayOrder.map((label) => {
+            const content = parsedSections[label];
+            return (
+              content && (
                 <div
-                  className="flex items-center justify-between cursor-pointer mb-2"
-                  onClick={() => toggleCollapse(label)}
+                  key={label}
+                  className={`p-4 border-l-4 rounded shadow-sm ${sectionStyles[label] || "border-gray-300 bg-white"}`}
                 >
-                  <div className="flex items-center gap-2">
-                    {sectionIcons[label] || null}
-                    <h3 className="font-bold text-lg">{label}</h3>
+                  <div
+                    className="flex items-center justify-between cursor-pointer mb-2"
+                    onClick={() => toggleCollapse(label)}
+                  >
+                    <div className="flex items-center gap-2">
+                      {sectionIcons[label] || null}
+                      <h3 className="font-bold text-lg">{label}</h3>
+                    </div>
+                    {collapsed[label] ? (
+                      <ChevronRight className="w-5 h-5 text-gray-500" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-gray-500" />
+                    )}
                   </div>
-                  {collapsed[label] ? (
-                    <ChevronRight className="w-5 h-5 text-gray-500" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-500" />
+                  {!collapsed[label] && (
+                    label === "Visual" ? (() => {
+                      try {
+                        const parsed = JSON.parse(content);
+                        if (content.includes("graphType")) {
+                          return <GraphRenderer data={parsed} />;
+                        } else if (content.includes("geometryType")) {
+                          return <GeometryRenderer data={parsed} />;
+                        } else {
+                          return <VisualRenderer content={content} />;
+                        }
+                      } catch (e) {
+                        console.warn("Invalid JSON for visual content:", e);
+                        return <VisualRenderer content={content} />;
+                      }
+                    })() : (
+                      <ReactMarkdown>{content}</ReactMarkdown>
+                    )
                   )}
                 </div>
-                {!collapsed[label] && (
-                  label === "Visual" ? (
-                    content.includes("graphType") ? (
-                      <GraphRenderer data={JSON.parse(content)} />
-                    ) : content.includes("geometryType") ? (
-                      <GeometryRenderer data={JSON.parse(content)} />
-                    ) : (
-                      <VisualRenderer content={content} />
-                    )
-                  ) : (
-                    <ReactMarkdown>{content}</ReactMarkdown>
-                  )
-                )}
-              </div>
-            )
-          ))}
+              )
+            );
+          })}
         </div>
       )}
     </div>
