@@ -21,7 +21,7 @@ const Navbar = () => {
             <Link to="/signup" className="signup-button">
               Sign up
             </Link>
-            <span className="signup-badge">🎉 50 free tokens</span>
+            <span className="signup-badge">🎉 5 free tokens</span>
           </div>
         </div>
       </div>
