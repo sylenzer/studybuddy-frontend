@@ -32,7 +32,7 @@ const SignupPage = () => {
       await supabase.from("user_tokens").upsert([
         {
           user_id: user.id,
-          tokens: 50,
+          tokens: 5,
         },
       ]);
     }
