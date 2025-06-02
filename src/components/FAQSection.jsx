@@ -1,48 +1,41 @@
 // src/components/FAQSection.jsx
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useLoading } from "../context/LoadingContext";
 import FAQReviewForm from "./FAQReviewForm";
-
 
 const faqs = [
   {
-    question: "How do I use the Custom Problem Solver?",
-    answer: "Just enter your math problem in the text box and click 'Solve'. You'll get step-by-step help, visuals, and hints."
+    question: "Who can use StudyBuddy+?",
+    answer: "You must be 18 years or older to use StudyBuddy+. We do not allow access to anyone under 18, and accounts violating this rule will be terminated without refund."
   },
   {
-    question: "Is StudyBuddy+ free to use?",
-    answer: "No it cost money. You must sign up for an account. You will be redirect to stripe for payment."
+    question: "How does StudyBuddy+ work?",
+    answer: "You enter a math problem and the AI will guide you through step-by-step solutions, hints, and visualizations — without giving away the final answer."
   },
   {
-    question: "Can I track my learning progress?",
-    answer: "Absolutely. Your problems, solutions, and progress are saved to your account so you can review them anytime."
+    question: "Is this service free?",
+    answer: "No. StudyBuddy+ uses a token-based system. You can purchase token packs from the Pricing page. A small signup bonus is provided."
+  },
+  {
+    question: "Can I get a refund?",
+    answer: "No. All token purchases are final. We recommend starting with a small token pack if you're new."
+  },
+  {
+    question: "What happens if I misuse the platform?",
+    answer: "Anyone using StudyBuddy+ to cheat, violate the Terms of Service, or impersonate another user will be permanently removed without refund."
+  },
+  {
+    question: "How is this different from other math solvers?",
+    answer: "StudyBuddy+ helps you understand, not just get answers. It uses Common Core-aligned explanations, adaptive hints, and AI that teaches, not cheats."
   }
 ];
 
 const FAQSection = () => {
-  const floatingSymbols = useMemo(() => {
-    return symbols.map((symbol, idx) => ({
-      symbol,
-      id: `${symbol}-${idx}`,
-      top: Math.random() * 90,
-      left: Math.random() * 90,
-      delay: Math.random() * 3,
-      duration: 6 + Math.random() * 4,
-      rotation: Math.random() * 360
-    }));
-  }, []);
-
   const [openIndex, setOpenIndex] = useState(null);
-  const { setLoading } = useLoading();
   const [reviews, setReviews] = useState([]);
 
-  const toggle = async (index) => {
-    setLoading(true);
-    setTimeout(() => {
-      setOpenIndex(openIndex === index ? null : index);
-      setLoading(false);
-    }, 300);
+  const toggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
   };
 
   const handleReviewSubmit = (newReview) => {
@@ -51,25 +44,6 @@ const FAQSection = () => {
 
   return (
     <div className="relative w-full overflow-hidden bg-white dark:bg-gray-100 py-20 px-4">
-      {/* Floating Math Symbols */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        {floatingSymbols.map((item) => (
-          <div
-            key={item.id}
-            className="absolute text-purple-300 text-5xl opacity-20 animate-drift hover:animate-sparkle"
-            style={{
-              top: `${item.top}%`,
-              left: `${item.left}%`,
-              transform: `translate(-50%, -50%) rotate(${item.rotation}deg)`,
-              animationDuration: `${item.duration}s`,
-              animationDelay: `${item.delay}s`
-            }}
-          >
-            {item.symbol}
-          </div>
-        ))}
-      </div>
-
       <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center px-4">
         <h2 className="text-4xl font-bold text-center mb-10 text-gray-800">
           Frequently Asked Questions
@@ -98,8 +72,10 @@ const FAQSection = () => {
           ))}
         </div>
 
+        {/* Review Form */}
         <FAQReviewForm onSubmit={handleReviewSubmit} />
 
+        {/* Recent Reviews */}
         {reviews.length > 0 && (
           <div className="max-w-2xl mx-auto mt-12 space-y-6">
             <h3 className="text-2xl font-semibold text-center text-gray-800">Recent Reviews</h3>
