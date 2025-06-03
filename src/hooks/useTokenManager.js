@@ -1,14 +1,11 @@
 // src/hooks/useTokenManager.js
 import { useEffect, useState } from "react";
-import { useUser } from "@/context/UserContext";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
 
-const useTokenManager = () => {
-  const { user } = useUser();
+const useTokenManager = (userId, accessToken) => {
   const [tokens, setTokens] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const headers = {
     apikey: SUPABASE_SERVICE_KEY,
@@ -18,33 +15,33 @@ const useTokenManager = () => {
   };
 
   const getTokens = async () => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/user_tokens?select=tokens&user_id=eq.${user.id}&limit=1`,
+        `${SUPABASE_URL}/rest/v1/user_tokens?select=tokens&user_id=eq.${userId}&limit=1`,
         { headers }
       );
       const data = await res.json();
       if (data?.length > 0) {
         setTokens(data[0].tokens);
+        return data[0].tokens;
       } else {
-        console.warn("User has no token row.");
         setTokens(0);
+        return 0;
       }
     } catch (err) {
-      console.error("Error fetching tokens:", err);
-    } finally {
-      setLoading(false);
+      console.error("❌ getTokens failed:", err);
+      return null;
     }
   };
 
   const updateTokens = async (delta) => {
-    if (!user?.id) return;
+    if (!userId) return;
 
     try {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/user_tokens?user_id=eq.${user.id}`,
+        `${SUPABASE_URL}/rest/v1/user_tokens?user_id=eq.${userId}`,
         {
           method: "PATCH",
           headers,
@@ -56,17 +53,19 @@ const useTokenManager = () => {
       const data = await res.json();
       if (data?.length > 0) {
         setTokens(data[0].tokens);
+        return data[0].tokens;
       }
     } catch (err) {
-      console.error("Error updating tokens:", err);
+      console.error("❌ updateTokens failed:", err);
     }
   };
 
+  // Optionally load tokens on mount
   useEffect(() => {
-    if (user?.id) getTokens();
-  }, [user]);
+    if (userId) getTokens();
+  }, [userId]);
 
-  return { tokens, updateTokens, loading };
+  return { tokens, getTokens, updateTokens };
 };
 
 export default useTokenManager;
