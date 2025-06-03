@@ -33,24 +33,24 @@ const PricingPage = () => {
   const { user } = useUser();
 
   const handleCheckout = async (priceId) => {
-    if (!user) {
-      alert("Please log in to purchase tokens.");
-      return;
-    }
+  if (!user) {
+    alert("Please log in to purchase tokens.");
+    return;
+  }
 
-    const stripe = await stripePromise;
-    const res = await fetch("/api/create-checkout-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ priceId, userId: user.id }),
-    });
+  const res = await fetch("https://your-railway-backend-url/api/create-checkout-session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ priceId, userId: user.id }),
+  });
 
-    const session = await res.json();
-    if (session.id) {
-      stripe.redirectToCheckout({ sessionId: session.id });
-    } else {
-      alert("Failed to create Stripe checkout session.");
-    }
+  const session = await res.json();
+
+  if (session.url) {
+    window.location.href = session.url;
+  } else {
+    alert("Failed to create Stripe checkout session.");
+  }
   };
 
   return (
