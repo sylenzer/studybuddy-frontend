@@ -38,7 +38,7 @@ const PricingPage = () => {
     return;
   }
 
-  const res = await fetch("https://your-railway-backend-url/api/create-checkout-session", {
+  const res = await fetch("https://studybuddy-backend-production.up.railway.app\/api/create-checkout-session", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ priceId, userId: user.id }),
