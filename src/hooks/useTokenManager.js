@@ -1,43 +1,50 @@
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// src/hooks/useTokenManager.js
+import { useEffect, useState } from "react";
+import { useUser } from "@/context/UserContext";
 
-export const useTokenManager = (userId, accessToken) => {
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+
+const useTokenManager = () => {
+  const { user } = useUser();
+  const [tokens, setTokens] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const headers = {
-    apikey: SUPABASE_KEY,
-    Authorization: `Bearer ${accessToken}`,
-    Accept: "application/json",
+    apikey: SUPABASE_SERVICE_KEY,
+    Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
     "Content-Type": "application/json",
     Prefer: "return=representation",
   };
 
   const getTokens = async () => {
-    if (!userId || !accessToken) return 0;
+    if (!user?.id) return;
 
     try {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/profiles?select=tokens&user_id=eq.${userId}&limit=1`,
+        `${SUPABASE_URL}/rest/v1/user_tokens?select=tokens&user_id=eq.${user.id}&limit=1`,
         { headers }
       );
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`Get tokens failed: ${res.status} — ${text}`);
-      }
-
       const data = await res.json();
-      return Array.isArray(data) && data.length > 0 ? data[0].tokens : 0;
+      if (data?.length > 0) {
+        setTokens(data[0].tokens);
+      } else {
+        console.warn("User has no token row.");
+        setTokens(0);
+      }
     } catch (err) {
-      console.error("❌ getTokens error:", err);
-      return 0;
+      console.error("Error fetching tokens:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateTokens = async (delta) => {
-    if (!userId || !accessToken || typeof delta !== "number") return false;
+    if (!user?.id) return;
 
     try {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/profiles?user_id=eq.${userId}`,
+        `${SUPABASE_URL}/rest/v1/user_tokens?user_id=eq.${user.id}`,
         {
           method: "PATCH",
           headers,
@@ -46,26 +53,20 @@ export const useTokenManager = (userId, accessToken) => {
           }),
         }
       );
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`Token update failed: ${res.status} — ${text}`);
-      }
-
       const data = await res.json();
-      return data?.[0]?.tokens ?? true;
+      if (data?.length > 0) {
+        setTokens(data[0].tokens);
+      }
     } catch (err) {
-      console.error("❌ updateTokens error:", err);
-      return false;
+      console.error("Error updating tokens:", err);
     }
   };
 
-  const spendTokens = async (amount = 1) => updateTokens(-Math.abs(amount));
-  const addTokens = async (amount = 1) => updateTokens(Math.abs(amount));
+  useEffect(() => {
+    if (user?.id) getTokens();
+  }, [user]);
 
-  return {
-    getTokens,
-    spendTokens,
-    addTokens,
-  };
+  return { tokens, updateTokens, loading };
 };
+
+export default useTokenManager;
