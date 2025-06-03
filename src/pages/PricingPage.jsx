@@ -23,7 +23,7 @@ const tokenPacks = [
     title: "Power Pack",
     price: "$19.99",
     priceId: "price_1TOKENPOWER",
-    tokens: 300,
+    tokens: 200,
     bonus: 50,
     bestValue: true,
   },
