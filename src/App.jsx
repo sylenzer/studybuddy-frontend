@@ -11,7 +11,7 @@ import FAQ from "./pages/FAQ";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TermsPage from "./pages/TermsPage";
 import SignupPage from "./pages/SignupPage";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
+import PrivacyPage from "./pages/PrivacyPage";
 
 
 const App = () => {
@@ -34,7 +34,7 @@ const App = () => {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/signup" element={<SignupPage />} />
-<Route path="/privacy" element={<PrivacyPolicy />} />
+<Route path="/privacy" element={<PrivacyPage />} />
           </Routes>
         </Layout>
       </LoadingProvider>
