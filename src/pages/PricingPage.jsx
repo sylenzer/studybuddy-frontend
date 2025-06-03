@@ -8,21 +8,21 @@ const tokenPacks = [
   {
     title: "Starter Pack",
     price: "$4.99",
-    priceId: "price_1TOKENSTARTER",
+    priceId: "price_1RW06nEIanoX1tYOtFVP4HWP", // ✅ correct test ID
     tokens: 50,
     bonus: 0,
   },
   {
     title: "Standard Pack",
     price: "$9.99",
-    priceId: "price_1TOKENSTANDARD",
+    priceId: "price_1RW07IEIanoX1tYODw7ce90s", // ✅ correct test ID
     tokens: 120,
     bonus: 20,
   },
   {
     title: "Power Pack",
     price: "$19.99",
-    priceId: "price_1TOKENPOWER",
+    priceId: "price_1RW07iEIanoX1tYOqg5QeUmL", // ✅ correct test ID
     tokens: 200,
     bonus: 50,
     bestValue: true,
