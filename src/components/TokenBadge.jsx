@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "@/context/UserContext";
-import { useTokenManager } from "@/hooks/useTokenManager";
-import { Coins } from "lucide-react"; // Optional: Replace with another icon if needed
+import useTokenManager from "@/hooks/useTokenManager";
+import { Coins } from "lucide-react";
 
 const TokenBadge = () => {
   const { user } = useUser();
-  const { getTokens } = useTokenManager(user?.id, user?.access_token);
+  const tokenManager = useTokenManager(user?.id, user?.access_token);
   const [tokens, setTokens] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
-      const t = await getTokens();
+      const t = await tokenManager.getTokens();
       setTokens(t);
     };
 
