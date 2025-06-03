@@ -38,20 +38,28 @@ const PricingPage = () => {
     return;
   }
 
-  const res = await fetch("https://studybuddy-backend-production.up.railway.app\/api/create-checkout-session", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ priceId, userId: user.id }),
-  });
+  console.log("✅ Sending checkout request for:", user.id, priceId);
 
-  const session = await res.json();
+  try {
+    const res = await fetch("https://studybuddy-backend-production.up.railway.app/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ priceId, userId: user.id }),
+    });
 
-  if (session.url) {
-    window.location.href = session.url;
-  } else {
-    alert("Failed to create Stripe checkout session.");
+    const session = await res.json();
+
+    if (session.url) {
+      window.location.href = session.url;
+    } else {
+      alert("❌ Failed to create Stripe checkout session.");
+      console.error("Stripe session error response:", session);
+    }
+  } catch (err) {
+    console.error("❌ Checkout error:", err);
+    alert("An error occurred. See console for details.");
   }
-  };
+};
 
   return (
     <section className="py-14">
