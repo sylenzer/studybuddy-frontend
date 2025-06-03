@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
-import studybuddyLogo from "@/assets/studybuddy-logo.png";
+import studybuddyLogo from "@/assets/FullLogo_Transparent hero.png";
 
 const SignupPage = () => {
   const navigate = useNavigate();
