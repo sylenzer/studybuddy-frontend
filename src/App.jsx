@@ -11,6 +11,8 @@ import FAQ from "./pages/FAQ";
 import ProtectedRoute from "./components/ProtectedRoute";
 import TermsPage from "./pages/TermsPage";
 import SignupPage from "./pages/SignupPage";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+
 
 const App = () => {
   return (
@@ -32,7 +34,7 @@ const App = () => {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/signup" element={<SignupPage />} />
-            import PrivacyPage from "./pages/PrivacyPage";
+<Route path="/privacy" element={<PrivacyPolicy />} />
           </Routes>
         </Layout>
       </LoadingProvider>

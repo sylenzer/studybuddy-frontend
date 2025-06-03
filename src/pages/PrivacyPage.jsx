@@ -68,7 +68,7 @@ const PrivacyPage = () => (
 
     <h2 className="text-xl font-semibold mt-6 mb-2">11. Contact Us</h2>
     <p>If you have questions about this Privacy Policy or our data practices, contact us:<br />
-      📧 <strong>support@studybuddyplus.com</strong>
+      📧 <strong>bltechnologies318@gmail.com</strong>
     </p>
   </div>
 );

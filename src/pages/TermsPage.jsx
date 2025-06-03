@@ -45,7 +45,7 @@ const TermsPage = () => (
 
     <h2 className="text-xl font-semibold mt-6 mb-2">10. Contact</h2>
     <p>If you have questions about these Terms, contact us at: <br />
-      <strong>support@studybuddyplus.com</strong>
+      <strong>bltechnologies318@gmail.com</strong>
     </p>
   </div>
 );
