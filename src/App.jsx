@@ -1,6 +1,6 @@
 
 import { Routes, Route } from "react-router-dom";
-import { UserProvider } from "@/context/UserContext";
+import { useUser } from "@/context/UserContext";
 import { LoadingProvider } from "./context/LoadingContext";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
@@ -12,9 +12,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import TermsPage from "./pages/TermsPage";
 import SignupPage from "./pages/SignupPage";
 import PrivacyPage from "./pages/PrivacyPage";
+import { useEnsureUserTokens } from "@/hooks/useEnsureUserTokens";
 
 
 const App = () => {
+  const { user } = useUser(); // 👈 grab the user from context
+  useEnsureUserTokens(user); // 👈 run the safeguard when user logs in
+
   return (
     <UserProvider>
       <LoadingProvider>
