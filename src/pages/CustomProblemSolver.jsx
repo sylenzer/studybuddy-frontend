@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import { supabase } from "../lib/supabaseClient";
-import useTokenManager from "@/hooks/useTokenManager";
+import useTokenManager from "../hooks/useTokenManager";
 import {
   Lightbulb,
   ListChecks,
