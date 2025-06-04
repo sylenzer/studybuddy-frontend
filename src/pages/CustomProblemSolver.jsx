@@ -16,6 +16,8 @@ import {
 import VisualRenderer from "../components/VisualRenderer";
 import GraphRenderer from "../components/GraphRenderer";
 import GeometryRenderer from "../components/GeometryRenderer";
+import { useSupabaseProgress } from "../hooks/useSupabaseProgress";
+
 
 const SHOW_HINTS = true;
 
@@ -107,6 +109,19 @@ const CustomProblemSolver = () => {
       };
 
       setParsedSections(sections);
+
+      // Save progress to Supabase
+if (result) {
+  const visualBlock = extractBlock(result, "VISUAL_RENDER");
+  saveProgress({
+    problem: prompt,
+    result,
+    visual: visualBlock,
+    hintMode: true,
+  });
+}
+
+const { history, loading } = useSupabaseProgress();
 
       if (tokenManager) {
         await tokenManager.spendTokens(1);
