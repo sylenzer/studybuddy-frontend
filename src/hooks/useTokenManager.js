@@ -7,7 +7,7 @@ const useTokenManager = (userId) => {
     if (!userId) return;
 
     try {
-      const res = await fetch(`/api/get-token-balance?userId=${userId}`);
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/get-token-balance?userId=${userId}`);
       const data = await res.json();
       if (data?.token_balance !== undefined) {
         setTokens(data.token_balance);
