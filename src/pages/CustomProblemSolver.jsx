@@ -43,7 +43,6 @@ const CustomProblemSolver = () => {
   const [error, setError] = useState("");
   const [userReady, setUserReady] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
   const [tokenLoading, setTokenLoading] = useState(true);
   const [resultText, setResultText] = useState("");
@@ -55,27 +54,24 @@ const CustomProblemSolver = () => {
       if (user) {
         setUserId(user.id);
         setUserReady(true);
-        supabase.auth.getSession().then(({ data: { session } }) => {
-          if (session) setAccessToken(session.access_token);
-        });
       } else {
         window.location.href = "/login";
       }
     });
   }, []);
 
-  const tokenManager = useTokenManager(userId, accessToken);
+  const tokenManager = useTokenManager(userId);
 
   useEffect(() => {
     const fetchTokens = async () => {
-      if (tokenManager && userId && accessToken) {
+      if (tokenManager && userId) {
         const tokens = await tokenManager.getTokens();
         setTokenBalance(tokens);
         setTokenLoading(false);
       }
     };
     fetchTokens();
-  }, [tokenManager, userId, accessToken]);
+  }, [tokenManager, userId]);
 
   const extractBlock = (text, tag) => {
     const regex = new RegExp(`\\*\\*\\[${tag}\\]\\*\\*([^]*?)(?=\\*\\*\\[|$)`, "i");
@@ -96,7 +92,7 @@ const CustomProblemSolver = () => {
         problem: prompt,
         hintMode: true,
         strategy: "stepByStep",
-        userId: userId,
+        userId,
       });
 
       const result = res.data.result;
