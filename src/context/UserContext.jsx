@@ -41,7 +41,8 @@ export const UserProvider = ({ children }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    console.warn("⚠️ useUser() called outside of <UserProvider>. Returning fallback.");
+    console.warn("⚠️ useUser() was called too early:");
+    console.trace(); // 👈 logs the actual file + line that triggered it
     return {
       user: null,
       session: null,
