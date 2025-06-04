@@ -17,7 +17,6 @@ import { useUser } from "@/context/UserContext";
 
 const App = () => {
   const { user } = useUser(); // 👈 grab the user from context
-  useEnsureUserTokens(user); // 👈 run the safeguard when user logs in
 
   return (
     <UserProvider>
