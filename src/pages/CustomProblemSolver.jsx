@@ -17,6 +17,12 @@ import VisualRenderer from "../components/VisualRenderer";
 import GraphRenderer from "../components/GraphRenderer";
 import GeometryRenderer from "../components/GeometryRenderer";
 import { useSupabaseProgress } from "../hooks/useSupabaseProgress";
+import { useLocation } from "react-router-dom";
+const location = useLocation();
+const [prompt, setPrompt] = useState(location.state?.initialPrompt || "");
+import SolverHistoryPanel from "../components/SolverHistoryPanel";
+
+<SolverHistoryPanel onLoadProblem={(p) => setPrompt(p)} />
 
 
 const SHOW_HINTS = true;

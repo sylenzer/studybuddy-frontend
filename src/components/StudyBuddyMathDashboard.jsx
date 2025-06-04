@@ -1,32 +1,37 @@
-import React, { useState, useEffect } from "react";
-import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
+// src/pages/StudyBuddyMathDashboard.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function StudyBuddyMathDashboard() {
+const StudyBuddyMathDashboard = () => {
   const [customProblem, setCustomProblem] = useState("");
-  const { transcript, listening, resetTranscript } = useSpeechRecognition();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    setCustomProblem(transcript);
-  }, [transcript]);
-
-  const startListening = () => SpeechRecognition.startListening({ continuous: true });
-  const stopListening = () => SpeechRecognition.stopListening();
+  const handleSubmit = () => {
+    if (!customProblem.trim()) {
+      alert("Please enter a math problem first!");
+      return;
+    }
+    navigate("/solver", { state: { initialPrompt: customProblem } });
+  };
 
   return (
-    <div className="p-6 w-full max-w-xl">
-      <h1 className="text-2xl font-bold mb-4 text-center">📚 StudyBuddy+ Math Dashboard</h1>
-      <input
-        type="text"
+    <div className="max-w-xl mx-auto mt-10">
+      <h1 className="text-2xl font-bold text-center mb-4">StudyBuddy Math Dashboard</h1>
+      <textarea
         value={customProblem}
         onChange={(e) => setCustomProblem(e.target.value)}
-        placeholder="Type your math problem here"
-        className="border border-gray-300 p-2 rounded w-full"
+        placeholder="Type your math problem here..."
+        className="w-full p-3 border border-gray-300 rounded-md shadow-sm resize-y min-h-[4rem]"
+        rows={4}
       />
-      <div className="mt-4 space-x-2 flex justify-center">
-        <button onClick={startListening} className="bg-blue-500 text-white px-4 py-2 rounded">🎙 Speak</button>
-        <button onClick={stopListening} className="bg-red-500 text-white px-4 py-2 rounded">🛑 Stop</button>
-      </div>
-      <p className="mt-4 italic text-center text-gray-500">🎧 Listening: {listening ? "Yes" : "No"}</p>
+      <button
+        onClick={handleSubmit}
+        className="mt-4 w-full bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 disabled:opacity-50"
+      >
+        Solve This Problem
+      </button>
     </div>
   );
-}
+};
+
+export default StudyBuddyMathDashboard;
