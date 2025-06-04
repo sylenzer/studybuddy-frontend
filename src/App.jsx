@@ -13,7 +13,6 @@ import TermsPage from "./pages/TermsPage";
 import SignupPage from "./pages/SignupPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import { useUser } from "@/context/UserContext";
-import { useEnsureUserTokens } from "@/hooks/useEnsureUserTokens";
 
 
 const App = () => {
