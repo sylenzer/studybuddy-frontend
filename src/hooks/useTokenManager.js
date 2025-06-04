@@ -16,3 +16,4 @@ const getTokens = async () => {
     return null;
   }
 };
+export default useTokenManager;
