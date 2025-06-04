@@ -1,4 +1,3 @@
-
 import { Routes, Route } from "react-router-dom";
 import { UserProvider } from "@/context/UserContext";
 import { LoadingProvider } from "./context/LoadingContext";
@@ -12,12 +11,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import TermsPage from "./pages/TermsPage";
 import SignupPage from "./pages/SignupPage";
 import PrivacyPage from "./pages/PrivacyPage";
-import { useUser } from "@/context/UserContext";
-
 
 const App = () => {
-  const { user } = useUser(); // 👈 grab the user from context
-
   return (
     <UserProvider>
       <LoadingProvider>
@@ -37,7 +32,7 @@ const App = () => {
             <Route path="/faq" element={<FAQ />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/signup" element={<SignupPage />} />
-<Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
           </Routes>
         </Layout>
       </LoadingProvider>
