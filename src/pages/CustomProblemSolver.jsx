@@ -153,12 +153,22 @@ const CustomProblemSolver = () => {
         className="w-full p-3 border border-gray-300 rounded-md shadow-sm resize-y min-h-[4rem]"
       />
       <button
-        onClick={handleSolve}
-        disabled={loading || !prompt.trim()}
-        className="mt-4 bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 disabled:opacity-50"
-      >
-        {loading ? "Solving..." : "Solve"}
-      </button>
+  onClick={() => {
+    if (tokenBalance === 0) {
+      alert("You’re out of tokens! Please buy more to continue solving.");
+      return;
+    }
+    handleSolve();
+  }}
+  disabled={loading || !prompt.trim() || tokenBalance === null}
+  className={`mt-4 py-2 px-4 rounded ${
+    tokenBalance === 0
+      ? "bg-gray-400 cursor-not-allowed text-white"
+      : "bg-purple-600 text-white hover:bg-purple-700"
+  } disabled:opacity-50`}
+>
+  {loading ? "Solving..." : "Solve"}
+</button>
 
       {error && (
         <div className="text-red-600 text-center font-semibold mt-4">
