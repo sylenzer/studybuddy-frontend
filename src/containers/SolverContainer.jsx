@@ -7,7 +7,7 @@ import SolverStatusPanel from "../components/SolverStatusPanel";
 import { useSupabaseProgress } from "@/hooks/useSupabaseProgress";
 import { useUser } from "@/context/UserContext";
 import LoaderCube from "../components/LoaderCube";
-import { useTokenManager } from "@/hooks/useTokenManager";
+import useTokenManager from "@/hooks/useTokenManager";
 
 const EnvDebugger = () => {
   return (

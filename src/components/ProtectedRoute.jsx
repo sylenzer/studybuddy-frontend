@@ -2,7 +2,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
-import { useTokenManager } from "@/hooks/useTokenManager";
+import useTokenManager from "@/hooks/useTokenManager";
 
 
 const ProtectedRoute = ({ children }) => {
