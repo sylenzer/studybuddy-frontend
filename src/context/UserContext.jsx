@@ -3,7 +3,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-const UserContext = createContext();
+// ✅ SAFELY initialized with null (prevents crashes)
+const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
   const [session, setSession] = useState(null);
@@ -11,14 +12,14 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Initialize session
+    // Get current session
     supabase.auth.getSession().then(({ data }) => {
       setSession(data?.session || null);
       setUser(data?.session?.user || null);
       setLoading(false);
     });
 
-    // Listen for auth changes
+    // Listen for changes
     const { data: listener } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);
       setUser(newSession?.user || null);
@@ -36,7 +37,7 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-// ✅ Safe fallback: prevents crash if used outside provider
+// ✅ Defensive fallback (prevents null errors during early render)
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
