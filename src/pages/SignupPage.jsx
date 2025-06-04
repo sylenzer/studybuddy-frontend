@@ -27,16 +27,7 @@ const SignupPage = () => {
       return;
     }
 
-    const user = data?.user;
-    if (user) {
-      await supabase.from("user_tokens").upsert([
-        {
-          user_id: user.id,
-          tokens: 5,
-        },
-      ]);
-    }
-
+    // ✅ Supabase SQL trigger will handle all user_tokens/profiles inserts
     navigate("/solver");
   };
 
