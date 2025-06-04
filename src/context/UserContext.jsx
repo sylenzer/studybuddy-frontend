@@ -11,12 +11,14 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const currentSession = supabase.auth.getSession().then(({ data }) => {
+    // Initialize session
+    supabase.auth.getSession().then(({ data }) => {
       setSession(data?.session || null);
       setUser(data?.session?.user || null);
       setLoading(false);
     });
 
+    // Listen for auth changes
     const { data: listener } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);
       setUser(newSession?.user || null);
@@ -34,4 +36,16 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-export const useUser = () => useContext(UserContext);
+// ✅ Safe fallback: prevents crash if used outside provider
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    console.warn("⚠️ useUser() called outside of <UserProvider>. Returning fallback.");
+    return {
+      user: null,
+      session: null,
+      loading: true,
+    };
+  }
+  return context;
+};
