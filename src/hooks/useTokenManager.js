@@ -2,16 +2,15 @@
 import { useEffect, useState } from "react";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_SERVICE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+const SERVICE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
 
-const useTokenManager = (userId, accessToken) => {
+const useTokenManager = (userId) => {
   const [tokens, setTokens] = useState(null);
 
   const headers = {
-    apikey: SUPABASE_SERVICE_KEY,
-    Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+    apikey: SERVICE_KEY,
+    Authorization: `Bearer ${SERVICE_KEY}`,
     "Content-Type": "application/json",
-    Prefer: "return=representation",
   };
 
   const getTokens = async () => {
@@ -19,13 +18,13 @@ const useTokenManager = (userId, accessToken) => {
 
     try {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/user_tokens?select=tokens&user_id=eq.${userId}&limit=1`,
+        `${SUPABASE_URL}/rest/v1/user_tokens?select=token_balance&id=eq.${userId}&limit=1`,
         { headers }
       );
       const data = await res.json();
       if (data?.length > 0) {
-        setTokens(data[0].tokens);
-        return data[0].tokens;
+        setTokens(data[0].token_balance);
+        return data[0].token_balance;
       } else {
         setTokens(0);
         return 0;
@@ -41,26 +40,23 @@ const useTokenManager = (userId, accessToken) => {
 
     try {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/user_tokens?user_id=eq.${userId}`,
+        `${SUPABASE_URL}/rest/v1/user_tokens?id=eq.${userId}`,
         {
           method: "PATCH",
           headers,
-          body: JSON.stringify({
-            tokens: { increment: delta },
-          }),
+          body: JSON.stringify({ token_balance: delta }),
         }
       );
       const data = await res.json();
       if (data?.length > 0) {
-        setTokens(data[0].tokens);
-        return data[0].tokens;
+        setTokens(data[0].token_balance);
+        return data[0].token_balance;
       }
     } catch (err) {
       console.error("❌ updateTokens failed:", err);
     }
   };
 
-  // Optionally load tokens on mount
   useEffect(() => {
     if (userId) getTokens();
   }, [userId]);

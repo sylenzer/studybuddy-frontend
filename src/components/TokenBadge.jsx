@@ -1,3 +1,4 @@
+// TokenBadge.jsx
 import React, { useEffect, useState } from "react";
 import { useUser } from "@/context/UserContext";
 import useTokenManager from "@/hooks/useTokenManager";
@@ -5,17 +6,12 @@ import { Coins } from "lucide-react";
 
 const TokenBadge = () => {
   const { user } = useUser();
-  const tokenManager = useTokenManager(user?.id, user?.access_token);
+  const tokenManager = useTokenManager(user?.id);
   const [tokens, setTokens] = useState(null);
 
   useEffect(() => {
-    const fetch = async () => {
-      const t = await tokenManager.getTokens();
-      setTokens(t);
-    };
-
-    if (user?.id && user?.access_token) {
-      fetch();
+    if (user?.id) {
+      tokenManager.getTokens().then(setTokens);
     }
   }, [user]);
 
