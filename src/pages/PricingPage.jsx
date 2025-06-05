@@ -8,26 +8,27 @@ const tokenPacks = [
   {
     title: "Starter Pack",
     price: "$4.99",
-    priceId: "price_1RW06nEIanoX1tYOtFVP4HWP", // ✅ correct test ID
+    priceId: "price_1RWdsxEIanoX1tYObEIthfzP", // ✅ live
     tokens: 50,
     bonus: 0,
   },
   {
     title: "Standard Pack",
     price: "$9.99",
-    priceId: "price_1RW07IEIanoX1tYODw7ce90s", // ✅ correct test ID
+    priceId: "price_1RWdszEIanoX1tYObOLRUaL9", // ✅ live
     tokens: 120,
     bonus: 20,
   },
   {
     title: "Power Pack",
     price: "$19.99",
-    priceId: "price_1RW07iEIanoX1tYOqg5QeUmL", // ✅ correct test ID
+    priceId: "price_1RWdsnEIanoX1tYOirSOyJA6", // ✅ live
     tokens: 200,
     bonus: 50,
     bestValue: true,
   },
 ];
+
 
 const PricingPage = () => {
   const { user } = useUser();
