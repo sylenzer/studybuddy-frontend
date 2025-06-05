@@ -18,12 +18,7 @@ import GraphRenderer from "../components/GraphRenderer";
 import GeometryRenderer from "../components/GeometryRenderer";
 import { useSupabaseProgress } from "../hooks/useSupabaseProgress";
 import { useLocation } from "react-router-dom";
-const location = useLocation();
-const [prompt, setPrompt] = useState(location.state?.initialPrompt || "");
 import SolverHistoryPanel from "../components/SolverHistoryPanel";
-
-<SolverHistoryPanel onLoadProblem={(p) => setPrompt(p)} />
-
 
 const SHOW_HINTS = true;
 
@@ -46,7 +41,8 @@ const sectionIcons = {
 const displayOrder = ["Socratic", "Roadmap", "Step-by-Step", "Visual", "Multiple Choice"];
 
 const CustomProblemSolver = () => {
-  const [prompt, setPrompt] = useState("");
+  const location = useLocation();
+  const [prompt, setPrompt] = useState(location.state?.initialPrompt || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [userReady, setUserReady] = useState(false);
@@ -116,18 +112,17 @@ const CustomProblemSolver = () => {
 
       setParsedSections(sections);
 
-      // Save progress to Supabase
-if (result) {
-  const visualBlock = extractBlock(result, "VISUAL_RENDER");
-  saveProgress({
-    problem: prompt,
-    result,
-    visual: visualBlock,
-    hintMode: true,
-  });
-}
+      if (result) {
+        const visualBlock = extractBlock(result, "VISUAL_RENDER");
+        saveProgress({
+          problem: prompt,
+          result,
+          visual: visualBlock,
+          hintMode: true,
+        });
+      }
 
-const { history, loading } = useSupabaseProgress();
+      const { history, loading } = useSupabaseProgress();
 
       if (tokenManager) {
         await tokenManager.spendTokens(1);
@@ -160,6 +155,8 @@ const { history, loading } = useSupabaseProgress();
 
   return (
     <div className="solver-container max-w-xl mx-auto mt-10">
+      <SolverHistoryPanel onLoadProblem={(p) => setPrompt(p)} />
+
       {!tokenLoading && tokenBalance !== null && (
         <div className="text-right text-sm text-indigo-600 font-semibold mb-2">
           💎 {tokenBalance} tokens remaining
@@ -174,22 +171,22 @@ const { history, loading } = useSupabaseProgress();
         className="w-full p-3 border border-gray-300 rounded-md shadow-sm resize-y min-h-[4rem]"
       />
       <button
-  onClick={() => {
-    if (tokenBalance === 0) {
-      alert("You’re out of tokens! Please buy more to continue solving.");
-      return;
-    }
-    handleSolve();
-  }}
-  disabled={loading || !prompt.trim() || tokenBalance === null}
-  className={`mt-4 py-2 px-4 rounded ${
-    tokenBalance === 0
-      ? "bg-gray-400 cursor-not-allowed text-white"
-      : "bg-purple-600 text-white hover:bg-purple-700"
-  } disabled:opacity-50`}
->
-  {loading ? "Solving..." : "Solve"}
-</button>
+        onClick={() => {
+          if (tokenBalance === 0) {
+            alert("You’re out of tokens! Please buy more to continue solving.");
+            return;
+          }
+          handleSolve();
+        }}
+        disabled={loading || !prompt.trim() || tokenBalance === null}
+        className={`mt-4 py-2 px-4 rounded ${
+          tokenBalance === 0
+            ? "bg-gray-400 cursor-not-allowed text-white"
+            : "bg-purple-600 text-white hover:bg-purple-700"
+        } disabled:opacity-50`}
+      >
+        {loading ? "Solving..." : "Solve"}
+      </button>
 
       {error && (
         <div className="text-red-600 text-center font-semibold mt-4">
