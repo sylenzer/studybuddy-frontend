@@ -1,10 +1,10 @@
-// context/UserContext.js
+// context/UserContext.jsx
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-// ✅ SAFELY initialized with null (prevents crashes)
-const UserContext = createContext(null);
+// ✅ Initialize with empty object instead of null
+const UserContext = createContext({});
 
 export const UserProvider = ({ children }) => {
   const [session, setSession] = useState(null);
@@ -12,14 +12,12 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get current session
     supabase.auth.getSession().then(({ data }) => {
       setSession(data?.session || null);
       setUser(data?.session?.user || null);
       setLoading(false);
     });
 
-    // Listen for changes
     const { data: listener } = supabase.auth.onAuthStateChange((event, newSession) => {
       setSession(newSession);
       setUser(newSession?.user || null);
@@ -37,17 +35,12 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-// ✅ Defensive fallback (prevents null errors during early render)
+// ✅ Always return a safe fallback object
 export const useUser = () => {
   const context = useContext(UserContext);
-  if (!context) {
-    console.warn("⚠️ useUser() was called too early:");
-    console.trace(); // 👈 logs the actual file + line that triggered it
-    return {
-      user: null,
-      session: null,
-      loading: true,
-    };
-  }
-  return context;
+  return {
+    user: context?.user || null,
+    session: context?.session || null,
+    loading: context?.loading ?? true,
+  };
 };
