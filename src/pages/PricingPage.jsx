@@ -1,6 +1,6 @@
 // src/pages/PricingPage.jsx
 import React from "react";
-import { useUser } from "@/context/UserContext";
+import { useUser } from "../context/UserContext";
 import { Button } from "@/components/ui/button";
 import stripePromise from "@/lib/stripe";
 

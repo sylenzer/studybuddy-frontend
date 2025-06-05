@@ -1,6 +1,6 @@
 // TokenBadge.jsx
 import React, { useEffect, useState } from "react";
-import { useUser } from "@/context/UserContext";
+import { useUser } from "../context/UserContext";
 import useTokenManager from "@/hooks/useTokenManager";
 import { Coins } from "lucide-react";
 

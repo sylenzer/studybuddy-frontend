@@ -1,7 +1,7 @@
 // components/SolverHistoryPanel.jsx
 
 import React, { useEffect } from 'react';
-import { useUser } from '@/context/UserContext';
+import { useUser } from '../context/UserContext';
 import { useSupabaseProgress } from '@/hooks/useSupabaseProgress';
 import { Button } from '@/components/ui/button';
 

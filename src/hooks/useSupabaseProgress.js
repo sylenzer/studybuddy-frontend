@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import { useUser } from '@/context/UserContext';
+import { useUser } from '../context/UserContext';
 
 export function useSupabaseProgress() {
   const { user } = useUser();
