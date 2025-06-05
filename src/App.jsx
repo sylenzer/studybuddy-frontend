@@ -9,6 +9,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import TermsPage from "./pages/TermsPage";
 import SignupPage from "./pages/SignupPage";
 import PrivacyPage from "./pages/PrivacyPage";
+import SuccessPage from "./pages/SuccessPage";
+
 
 const App = () => {
   return (
